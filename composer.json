@@ -1,0 +1,27 @@
+{
+    "name": "toolkito/larasap",
+    "description": "Laravel social auto posting (Larasap) lets you automatically post all your content to social networks such as Telegram(Channel) and Twitter.",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Ali Hesari",
+            "email": "alihesari.com@gmail.com"
+        }
+    ],
+    "minimum-stability": "dev",
+    "autoload": {
+        "psr-4": {
+            "Toolkito\\Larasap\\": "src/"
+        }
+    },
+    "extra": {
+        "laravel": {
+            "providers": [
+                "Toolkito\\Larasap\\LarasapServiceProvider"
+            ],
+            "aliases": {
+                "Larasap": "Toolkito\\Larasap\\LarasapFacade"
+            }
+        }
+    }
+}
