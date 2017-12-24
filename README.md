@@ -4,6 +4,7 @@
 Laravel social auto posting lets you automatically post all your content to social networks such :
  - Telegram Channel (‌Based on [Telegram Bot API](https://core.telegram.org/bots/api))
  - Twitter
+ - Facebook
  
  ## 🚀 Features:
  - 🍒 Simple. Easy to use.
@@ -19,17 +20,27 @@ Laravel social auto posting lets you automatically post all your content to soci
  - 📞 Send contact to Telegram
  - 🌐 Send message with url inline keyboard to Telegram channel
  - ✨ Send text and media to Twitter
+ - 🎉 Send text and media to Facebook
  
- ## 🔨 Installation
+ ## 🔨 Installation:
  1. Download and install package via composer:
  
- ```
+ ```sh
  composer require toolkito/larasap
  ```
  2. Run the command below to publish the package config file: `config\larasap.php`
- ```
+ ```sh
  php artisan vendor:publish --tag=larasap
  ```
+ 
+ ## 🚥 Required:
+If you want to send post to facebook page, You must install the [Facebook SDK for PHP](https://github.com/facebook/php-graph-sdk) to post to the Facebook page.
+ 
+ The Facebook PHP SDK can be installed with Composer. Run this command:
+ ```sh
+ composer require facebook/graph-sdk
+ ```
+ 
  ## 🔌 Configuration:
  Set the social network information in the `config\larasap.php`. 
  
@@ -41,11 +52,11 @@ Laravel social auto posting lets you automatically post all your content to soci
  ## 🌱 Quick examples:
  ### ⭐ Telegram examples:
  #### 📝 Send text message to Telegram:
- ```
+ ```php
  SendTo::Telegram('Hello, I\'m testing Laravel social auto posting');
  ```
  #### 📷 Send photo to Telegram:
-  ```
+  ```php
   SendTo::Telegram(
       'Hello, I\'m testing Laravel social auto posting', // Photo caption (Optional)
       [
@@ -56,7 +67,7 @@ Laravel social auto posting lets you automatically post all your content to soci
   );
   ```
  #### 🎵 Send audio to Telegram:
-  ```
+  ```php
 SendTo::Telegram(
    'Hello, I\'m testing Laravel social auto posting', // Audio caption (Optional)
    [
@@ -70,7 +81,7 @@ SendTo::Telegram(
 );
 ```
 #### 📖 Send document to Telegram:
-  ```
+ ```php
 SendTo::Telegram(
     'Hello, I\'m testing Laravel social auto posting', // Document caption
     [
@@ -81,7 +92,7 @@ SendTo::Telegram(
 );
 ```
 #### 📺 Send video to Telegram:
-  ```
+ ```php
 SendTo::Telegram(
    'Hello, I\'m testing Laravel social auto posting', // Video caption (Optional)
    [
@@ -95,7 +106,7 @@ SendTo::Telegram(
 );
 ```
 #### 🔊 Send voice to Telegram:
-  ```
+ ```php
 SendTo::Telegram(
    'Hello, I\'m testing Laravel social auto posting', // Voice message caption (Optional)
    [
@@ -107,7 +118,7 @@ SendTo::Telegram(
 );
 ```
 #### 🎴 Send media group to Telegram:
-  ```
+ ```php
 SendTo::Telegram(
     null,
     [
@@ -129,7 +140,7 @@ SendTo::Telegram(
 );
 ```
 #### 📍 Send point on the map to Telegram:
-```
+```php
 SendTo::Telegram(
     null,
     [
@@ -141,7 +152,7 @@ SendTo::Telegram(
 );
 ```
 #### 📌 Send information about a venue to Telegram:
-```
+```php
 SendTo::Telegram(
     null,
     [
@@ -155,7 +166,7 @@ SendTo::Telegram(
 );
 ```
 #### 📞 Send phone contacts to Telegram:
-```
+```php
 SendTo::Telegram(
     null,
     [
@@ -168,7 +179,7 @@ SendTo::Telegram(
 );
 ```
 #### 🌐 Send message with inline button to Telegram:
-```
+```php
 SendTo::Telegram(
     'Laravel social auto posting',
     '',
@@ -189,7 +200,7 @@ SendTo::Telegram(
 );
 ```
 Or
-```
+```php
 SendTo::Telegram(
     'Laravel social auto posting',
     '',
@@ -209,11 +220,11 @@ SendTo::Telegram(
 ```
 ### ⭐ Twitter examples:
 #### ✨ Text tweet:
-```
+```php
 SendTo::Twitter('Hello, I\'m testing Laravel social auto posting');
 ```
 #### ✨ Tweet with media:
-```
+```php
 SendTo::Twitter(
     'Hello, I\'m testing Laravel social auto posting',
     [
@@ -222,4 +233,37 @@ SendTo::Twitter(
     ]
 );
 ```
+### ⭐ Facebook examples:
+#### 🎉 Send link to Facebook page:
+```php
+SendTo::Facebook(
+    'link',
+    [
+        'link' => 'https://github.com/toolkito/laravel-social-auto-posting',
+        'message' => 'Laravel social auto posting'
+    ]
+);
+```
+#### 🎉 Send photo to Facebook page:
+```php
+SendTo::Facebook(
+    'photo',
+    [
+        'photo' => public_path('img/1.jpg'),
+        'message' => 'Laravel social auto posting'
+    ]
+);
+```
+#### 🎉 Send video to Facebook page:
+```php
+SendTo::Facebook(
+    'video',
+    [
+        'video' => public_path('upload/1.mp4'),
+        'title' => 'Let Me Be Your Lover',
+        'description' => 'Let Me Be Your Lover - Enrique Iglesias'
+    ]
+);
+```
+
 

@@ -14,6 +14,13 @@ return [
         'consurmer_secret' => '',
         'access_token' => '',
         'access_token_secret' => ''
+    ],
+
+    'facebook' => [
+        'app_id' => '',
+        'app_secret' => '',
+        'default_graph_version' => '',
+        'page_access_token' => ''
     ]
 
 ];
