@@ -34,7 +34,7 @@ Laravel social auto posting lets you automatically post all your content to soci
  ```
  
  ## 🚥 Required:
-If you want to send post to facebook page, You must install the [Facebook SDK for PHP](https://github.com/facebook/php-graph-sdk) to post to the Facebook page.
+If you want to send post to Facebook page, you must install the [Facebook SDK for PHP](https://github.com/facebook/php-graph-sdk).
  
  The Facebook PHP SDK can be installed with Composer. Run this command:
  ```sh
