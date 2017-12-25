@@ -1,7 +1,6 @@
 ![](https://i.imgur.com/j6bzKQc.jpg)
-
-# Laravel social auto posting (Larasap) 
-Laravel social auto posting lets you automatically post all your content to social networks such :
+# 🌈 Introduction
+This is a Laravel package to post your content to social networks such:
  - Telegram Channel (‌Based on [Telegram Bot API](https://core.telegram.org/bots/api))
  - Twitter
  - Facebook
