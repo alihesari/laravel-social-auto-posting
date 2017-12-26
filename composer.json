@@ -2,13 +2,26 @@
     "name": "toolkito/larasap",
     "description": "Laravel social auto posting (Larasap) lets you automatically post all your content to social networks such as Telegram Channel and Twitter.",
     "license": "MIT",
+    "keywords": [
+        "laravel",
+        "social network",
+        "telegram",
+        "twitter",
+        "facebook"
+    ],
     "authors": [
         {
             "name": "Ali Hesari",
-            "email": "alihesari.com@gmail.com"
+            "email": "alihesari.com@gmail.com",
+            "homepage": "https://alihesari.com",
+            "role": "Developer"
         }
     ],
-    "minimum-stability": "dev",
+    "require": {
+        "php" : "~7.0",
+        "illuminate/support": "~5.5.0",
+        "facebook/graph-sdk": "^5.6.1"
+    },
     "autoload": {
         "psr-4": {
             "Toolkito\\Larasap\\": "src/"
@@ -23,5 +36,7 @@
                 "Larasap": "Toolkito\\Larasap\\LarasapFacade"
             }
         }
-    }
+    },
+    "minimum-stability": "dev",
+    "prefer-stable": true
 }
