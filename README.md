@@ -1,4 +1,7 @@
 ![](https://i.imgur.com/j6bzKQc.jpg)
+
+![](https://travis-ci.org/toolkito/laravel-social-auto-posting.svg?branch=master)
+
 # 🌈 Introduction
 This is a Laravel package to post your content to social networks such:
  - Telegram Channel (‌Based on [Telegram Bot API](https://core.telegram.org/bots/api))
