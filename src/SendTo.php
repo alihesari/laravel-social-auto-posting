@@ -30,12 +30,12 @@ class SendTo
      */
     public static function Telegram($text, $attachment = '', $inline_keyboard = '')
     {
-        if(Config::get('larasap.telegram.channel_signature')) {
+        if (Config::get('larasap.telegram.channel_signature')) {
             $type = isset($attachment['type']) ? 'caption' : 'text';
             $text = self::assignSignature($text, $type);
         }
 
-        if($attachment) {
+        if ($attachment) {
             switch ($attachment['type']) {
                 case 'photo':
                     $result = TelegramApi::sendPhoto(null, $attachment['file'], $text, $inline_keyboard);
@@ -75,7 +75,7 @@ class SendTo
                     $result = TelegramApi::sendContact(null, $attachment['phone_number'], $attachment['first_name'], $last_name, $inline_keyboard);
                     break;
             }
-        }else{
+        } else {
             $result = TelegramApi::sendMessage(null, $text, $inline_keyboard);
         }
 
@@ -106,15 +106,15 @@ class SendTo
     {
         switch ($type) {
             case 'link':
-                $message = isset($data['message'])? $data['message'] : '';
+                $message = isset($data['message']) ? $data['message'] : '';
                 $result = FacebookApi::sendLink($data['link'], $data['message']);
                 break;
             case 'photo':
-                $message = isset($data['message'])? $data['message'] : '';
+                $message = isset($data['message']) ? $data['message'] : '';
                 $result = FacebookApi::sendPhoto($data['photo'], $message);
                 break;
             case 'video':
-                $description = isset($data['description'])? $data['description'] : '';
+                $description = isset($data['description']) ? $data['description'] : '';
                 $result = FacebookApi::sendVideo($data['video'], $data['title'], $description);
                 break;
         }
@@ -128,15 +128,16 @@ class SendTo
      * @param $text
      * @param $text_type
      */
-    public static function assignSignature($text, $type){
-        $signature = "\n" .Config::get('larasap.telegram.channel_signature');
+    public static function assignSignature($text, $type)
+    {
+        $signature = "\n" . Config::get('larasap.telegram.channel_signature');
         $signature_length = strlen($signature);
         $text_length = strlen($text);
-        $max_length = ($type == 'text')? TelegramApi::TEXT_LENGTH : TelegramApi::CAPTION_LENGTH;
-        if($signature_length + $text_length <= $max_length || $signature_length > $text_length) {
+        $max_length = ($type == 'text') ? TelegramApi::TEXT_LENGTH : TelegramApi::CAPTION_LENGTH;
+        if ($signature_length + $text_length <= $max_length || $signature_length > $text_length) {
             return $text . $signature;
         }
 
-        return substr($text,0, $max_length - $signature_length).$signature;
+        return substr($text, 0, $max_length - $signature_length) . $signature;
     }
 }

@@ -34,10 +34,8 @@
         "laravel": {
             "providers": [
                 "Toolkito\\Larasap\\LarasapServiceProvider"
-            ],
-            "aliases": {
-                "Larasap": "Toolkito\\Larasap\\LarasapFacade"
-            }
+            ]
         }
-    }
+    },
+    "minimum-stability": "dev"
 }

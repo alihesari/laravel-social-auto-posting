@@ -1,7 +1,4 @@
 ![](https://i.imgur.com/j6bzKQc.jpg)
-
-![](https://travis-ci.org/toolkito/laravel-social-auto-posting.svg?branch=master)
-
 # 🌈 Introduction
 This is a Laravel package to post your content to social networks such:
  - Telegram Channel (‌Based on [Telegram Bot API](https://core.telegram.org/bots/api))
@@ -33,14 +30,6 @@ This is a Laravel package to post your content to social networks such:
  2. Run the command below to publish the package config file: `config\larasap.php`
  ```sh
  php artisan vendor:publish --tag=larasap
- ```
- 
- ## 🚥 Required:
-If you want to send post to Facebook page, you must install the [Facebook SDK for PHP](https://github.com/facebook/php-graph-sdk).
- 
- The Facebook PHP SDK can be installed with Composer. Run this command:
- ```sh
- composer require facebook/graph-sdk
  ```
  
  ## 🔌 Configuration:
