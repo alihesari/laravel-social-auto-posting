@@ -36,7 +36,7 @@ This is a Laravel package to post your content to social networks such:
  Set the social network information in the `config\larasap.php`. 
  
  ## 🕹 Usage:
- First, add the `use Tooltiko\Larasap\SendTo;` in your controller.
+ First, add the `use Toolkito\Larasap\SendTo;` in your controller.
  
  Next, send message to your Telegram channel or Twitter account. 
  
