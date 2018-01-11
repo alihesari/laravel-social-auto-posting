@@ -43,6 +43,11 @@ This is a Laravel package to post your content to social networks such:
  
  Next, send message to your Telegram channel or Twitter account. 
  
+ ## Roadmap
+
+* Improve tests and coverage
+* Improve performance
+
  ## 🌱 Quick examples:
  ### ⭐ Telegram examples:
  #### 📝 Send text message to Telegram:
