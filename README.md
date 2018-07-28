@@ -1,3 +1,11 @@
+# Looking for Maintainer(s)
+
+I have been really busy and I can't continue maintaing this repo alone. I would like to ask if anyone wants to help I can grant a permission both on github and npm to start merging a lot of request and dealing with issues.
+
+Please send me your github and npm id so I can add you in.
+
+Thanks!
+
 ![](https://i.imgur.com/j6bzKQc.jpg)
 
 [![Build Status](https://travis-ci.org/toolkito/laravel-social-auto-posting.svg?branch=master)](https://github.com/toolkito/laravel-social-auto-posting) [![GitHub tag](https://img.shields.io/github/tag/bevacqua/awesome-badges.svg)](https://github.com/toolkito/laravel-social-auto-posting) 
