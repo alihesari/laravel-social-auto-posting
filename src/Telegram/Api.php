@@ -57,6 +57,13 @@ class Api
     private static $channel_username;
 
     /**
+     * Proxy Status => On | Off
+     *
+     * @var string
+     */
+    private static $proxy;
+
+    /**
      * Initialize
      */
     public static function initialize()
@@ -64,6 +71,7 @@ class Api
         self::$api_token = Config::get('larasap.telegram.api_token');
         self::$bot_username = Config::get('larasap.telegram.bot_username');
         self::$channel_username = Config::get('larasap.telegram.channel_username');
+        self::$proxy = !! Config::get('larasap.telegram.proxy');
     }
 
     /**
@@ -364,6 +372,23 @@ class Api
     }
 
     /**
+     * Proxy Options 
+     *
+     * @param $buttons
+     * @return string
+     */
+    public static function setProxyOptions()
+    {
+        return [
+            CURLOPT_PROXY => Config::get('hostname' , '127.0.0.1'),
+            CURLOPT_PROXYPORT => Config::get('larasap.proxy.port' , '9050'),
+            CURLOPT_PROXYTYPE => Config::get('larasap.proxy.type' , 7),
+            CURLOPT_PROXYUSERPWD => Config::get('larasap.proxy.username'.':'.'larasap.proxy.username'),
+        ];
+        
+    }
+
+    /**
      * Send Request to Telegram api
      *
      * @param string $method
@@ -379,6 +404,11 @@ class Api
         curl_setopt($curl, CURLOPT_POST, 1);
         curl_setopt($curl, CURLOPT_POSTFIELDS, http_build_query($params));
         curl_setopt($curl, CURLOPT_SSL_VERIFYPEER, false);
+
+        if(self::$proxy){
+            curl_setopt_array($curl, self::setProxyOptions());
+        }
+
         $curl_result = curl_exec($curl);
         $http_code = curl_getinfo($curl, CURLINFO_HTTP_CODE);
         curl_close($curl);
