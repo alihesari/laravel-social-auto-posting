@@ -372,10 +372,11 @@ class Api
     }
 
     /**
-     * Proxy Options 
+     * Set Proxy
      *
+     * @return array
      */
-    public static function setProxyOptions()
+    public static function setProxy()
     {
         return [
             CURLOPT_PROXY => Config::get('hostname' , '127.0.0.1'),
@@ -404,7 +405,7 @@ class Api
         curl_setopt($curl, CURLOPT_SSL_VERIFYPEER, false);
 
         if(self::$proxy){
-            curl_setopt_array($curl, self::setProxyOptions());
+            curl_setopt_array($curl, self::setProxy());
         }
 
         $curl_result = curl_exec($curl);
