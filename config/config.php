@@ -26,7 +26,7 @@ return [
         // 'proxy' => false,   // True => Proxy is On | False => Proxy Off => TODO
     ],
 
-    // Set Proxy for Servers that can not Access Social Networks due to Sanctions or 
+    // Set Proxy for Servers that can not Access Social Networks due to Sanctions or ...
     'proxy' => [
         'type' => '',   // 7 for Socks5
         'hostname' => '', // localhost

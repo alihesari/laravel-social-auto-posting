@@ -374,8 +374,6 @@ class Api
     /**
      * Proxy Options 
      *
-     * @param $buttons
-     * @return string
      */
     public static function setProxyOptions()
     {
