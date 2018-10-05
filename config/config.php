@@ -14,16 +14,14 @@ return [
         'consurmer_key' => '',
         'consurmer_secret' => '',
         'access_token' => '',
-        'access_token_secret' => '',
-        //'proxy' => false,   // True => Proxy is On | False => Proxy Off => TODO
+        'access_token_secret' => ''
     ],
 
     'facebook' => [
         'app_id' => '',
         'app_secret' => '',
         'default_graph_version' => '',
-        'page_access_token' => '',
-        // 'proxy' => false,   // True => Proxy is On | False => Proxy Off => TODO
+        'page_access_token' => ''
     ],
 
     // Set Proxy for Servers that can not Access Social Networks due to Sanctions or ...
