@@ -379,10 +379,10 @@ class Api
     public static function setProxy()
     {
         return [
-            CURLOPT_PROXY => Config::get('hostname' , '127.0.0.1'),
+            CURLOPT_PROXY => Config::get('larasap.proxy.hostname' , '127.0.0.1'),
             CURLOPT_PROXYPORT => Config::get('larasap.proxy.port' , '9050'),
-            CURLOPT_PROXYTYPE => Config::get('larasap.proxy.type' , 7),
-            CURLOPT_PROXYUSERPWD => Config::get('larasap.proxy.username'.':'.'larasap.proxy.username'),
+            CURLOPT_PROXYTYPE => Config::get('larasap.proxy.type' , CURLPROXY_SOCKS5_HOSTNAME),
+            CURLOPT_PROXYUSERPWD => Config::get('larasap.proxy.username').':'.Config::get('larasap.proxy.password'),
         ];
         
     }
@@ -404,7 +404,7 @@ class Api
         curl_setopt($curl, CURLOPT_POSTFIELDS, http_build_query($params));
         curl_setopt($curl, CURLOPT_SSL_VERIFYPEER, false);
 
-        if(self::$proxy){
+        if(self::$proxy) {
             curl_setopt_array($curl, self::setProxy());
         }
 
