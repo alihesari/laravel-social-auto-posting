@@ -18,7 +18,7 @@
         }
     ],
     "require": {
-        "php" : "^7.0",
+        "php" : "^8.1",
         "facebook/graph-sdk": "^5.6.1"
     },
     "require-dev": {
@@ -36,5 +36,5 @@
             ]
         }
     },
-    "minimum-stability": "dev"
+    "minimum-stability": "beta"
 }
