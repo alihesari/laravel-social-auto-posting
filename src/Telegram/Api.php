@@ -11,7 +11,7 @@
  * Version:     1.0
  */
 
-namespace Toolkito\Larasap\Telegram;
+namespace Askancy\Larasap\Telegram;
 
 use Illuminate\Support\Facades\Config;
 

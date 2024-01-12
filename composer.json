@@ -1,6 +1,6 @@
 {
     "name": "askancy/larasap",
-    "version": "1.0",
+    "version": "1.1",
     "description": "Laravel social auto posting (Larasap) lets you automatically post all your content to social networks such as Telegram Channel and Twitter.",
     "license": "MIT",
     "keywords": [
@@ -25,13 +25,13 @@
     },
     "autoload": {
         "psr-4": {
-            "Toolkito\\Larasap\\": "src/"
+            "Askancy\\Larasap\\": "src/"
         }
     },
     "extra": {
         "laravel": {
             "providers": [
-                "Toolkito\\Larasap\\LarasapServiceProvider"
+                "Askancy\\Larasap\\LarasapServiceProvider"
             ]
         }
     }

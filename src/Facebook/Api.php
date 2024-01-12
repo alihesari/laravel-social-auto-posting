@@ -1,6 +1,6 @@
 <?php
 
-namespace Toolkito\Larasap\Facebook;
+namespace Askancy\Larasap\Facebook;
 
 use Facebook;
 use Illuminate\Support\Facades\Config;

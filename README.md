@@ -1,6 +1,6 @@
 ![](https://i.imgur.com/j6bzKQc.jpg)
 
-[![Build Status](https://travis-ci.org/toolkito/laravel-social-auto-posting.svg?branch=master)](https://github.com/toolkito/laravel-social-auto-posting) [![GitHub tag](https://img.shields.io/github/tag/bevacqua/awesome-badges.svg)](https://github.com/toolkito/laravel-social-auto-posting) 
+[![Build Status](https://travis-ci.org/Askancy/laravel-social-auto-posting.svg?branch=master)](https://github.com/Askancy/laravel-social-auto-posting) [![GitHub tag](https://img.shields.io/github/tag/bevacqua/awesome-badges.svg)](https://github.com/Askancy/laravel-social-auto-posting) 
 
 # 🌈 Introduction
 This is a Laravel package to post your content to social networks such:
@@ -28,7 +28,7 @@ This is a Laravel package to post your content to social networks such:
  1. Download and install package via composer:
  
  ```sh
- composer require toolkito/larasap
+ composer require Askancy/larasap
  ```
  2. Run the command below to publish the package config file: `config\larasap.php`
  ```sh
@@ -39,7 +39,7 @@ This is a Laravel package to post your content to social networks such:
  Set the social network information in the `config\larasap.php`. 
  
  ## 🕹 Usage:
- First, add the `use Toolkito\Larasap\SendTo;` in your controller.
+ First, add the `use Askancy\Larasap\SendTo;` in your controller.
  
  Next, send message to your Telegram channel or Twitter account. 
  
@@ -186,13 +186,13 @@ SendTo::Telegram(
         [
             [
                 'text' => 'Github',
-                'url' => 'https://github.com/toolkito/laravel-social-auto-posting'
+                'url' => 'https://github.com/Askancy/laravel-social-auto-posting'
             ]
         ],
         [
             [
                 'text' => 'Download',
-                'url' => 'https://github.com/toolkito/laravel-social-auto-posting/archive/master.zip'
+                'url' => 'https://github.com/Askancy/laravel-social-auto-posting/archive/master.zip'
             ],
         ]
     ]
@@ -207,11 +207,11 @@ SendTo::Telegram(
         [
             [
                 'text' => 'Github',
-                'url' => 'https://github.com/toolkito/laravel-social-auto-posting'
+                'url' => 'https://github.com/Askancy/laravel-social-auto-posting'
             ],
             [
                 'text' => 'Download',
-                'url' => 'https://github.com/toolkito/laravel-social-auto-posting/archive/master.zip'
+                'url' => 'https://github.com/Askancy/laravel-social-auto-posting/archive/master.zip'
             ],
         ]
     ]
@@ -238,7 +238,7 @@ SendTo::Twitter(
 SendTo::Facebook(
     'link',
     [
-        'link' => 'https://github.com/toolkito/laravel-social-auto-posting',
+        'link' => 'https://github.com/Askancy/laravel-social-auto-posting',
         'message' => 'Laravel social auto posting'
     ]
 );
