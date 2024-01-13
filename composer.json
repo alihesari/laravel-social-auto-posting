@@ -23,7 +23,7 @@
     "require": {
         "facebook/graph-sdk": "^5.6.1"
     },
-    "minimum-stability": "dev",
+    "minimum-stability": "stable",
     "prefer-stable": true,
     "extra": {
         "laravel": {
