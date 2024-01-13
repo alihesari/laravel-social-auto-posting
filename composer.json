@@ -29,5 +29,7 @@
                 "Askancy\\Larasap\\LarasapServiceProvider"
             ]
         }
-    }
+    },
+    "minimum-stability": "dev",
+    "prefer-stable": true,
 }
