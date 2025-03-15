@@ -470,16 +470,31 @@ class Api
      * Set Proxy
      *
      * @return array
+     * @throws TelegramApiException
      */
     public static function setProxy()
     {
-        return [
-            CURLOPT_PROXY => Config::get('larasap.proxy.hostname' , '127.0.0.1'),
-            CURLOPT_PROXYPORT => Config::get('larasap.proxy.port' , '9050'),
-            CURLOPT_PROXYTYPE => Config::get('larasap.proxy.type' , CURLPROXY_SOCKS5_HOSTNAME),
-            CURLOPT_PROXYUSERPWD => Config::get('larasap.proxy.username').':'.Config::get('larasap.proxy.password'),
+        $hostname = Config::get('larasap.proxy.hostname');
+        $port = Config::get('larasap.proxy.port');
+        $type = Config::get('larasap.proxy.type');
+        $username = Config::get('larasap.proxy.username');
+        $password = Config::get('larasap.proxy.password');
+
+        if (!$hostname || !$port) {
+            throw new TelegramApiException('Proxy hostname and port are required');
+        }
+
+        $proxyConfig = [
+            CURLOPT_PROXY => $hostname,
+            CURLOPT_PROXYPORT => $port,
+            CURLOPT_PROXYTYPE => $type ?: CURLPROXY_SOCKS5_HOSTNAME,
         ];
-        
+
+        if ($username && $password) {
+            $proxyConfig[CURLOPT_PROXYUSERPWD] = $username . ':' . $password;
+        }
+
+        return $proxyConfig;
     }
 
     /**
@@ -488,7 +503,7 @@ class Api
      * @param string $method
      * @param $params
      * @return mixed
-     * @throws \Exception
+     * @throws TelegramApiException
      */
     protected static function sendRequest($method, $params = [])
     {
@@ -519,24 +534,170 @@ class Api
         curl_setopt($curl, CURLOPT_RETURNTRANSFER, 1);
         curl_setopt($curl, CURLOPT_POST, 1);
         curl_setopt($curl, CURLOPT_POSTFIELDS, http_build_query($params));
-        curl_setopt($curl, CURLOPT_SSL_VERIFYPEER, false);
+        curl_setopt($curl, CURLOPT_SSL_VERIFYPEER, true);
+        curl_setopt($curl, CURLOPT_SSL_VERIFYHOST, 2);
+        curl_setopt($curl, CURLOPT_TIMEOUT, 30);
+        curl_setopt($curl, CURLOPT_CONNECTTIMEOUT, 10);
 
         if(self::$proxy) {
-            curl_setopt_array($curl, self::setProxy());
+            try {
+                curl_setopt_array($curl, self::setProxy());
+            } catch (TelegramApiException $e) {
+                curl_close($curl);
+                throw $e;
+            }
         }
 
         $curl_result = curl_exec($curl);
         $http_code = curl_getinfo($curl, CURLINFO_HTTP_CODE);
+        $curl_error = curl_error($curl);
         curl_close($curl);
+
+        if ($curl_error) {
+            throw new TelegramApiException(
+                "cURL Error: {$curl_error}",
+                $http_code
+            );
+        }
 
         if ($http_code != 200) {
             if ($curl_result) {
-                $curl_result = json_decode($curl_result, true);
-                throw new \Exception($curl_result['description']);
+                $error_data = json_decode($curl_result, true);
+                throw new TelegramApiException(
+                    $error_data['description'] ?? 'Unknown error occurred',
+                    $http_code,
+                    $error_data['error_code'] ?? null,
+                    $error_data['parameters'] ?? null
+                );
             }
-            throw new \Exception('an error was encountered');
+            throw new TelegramApiException(
+                "HTTP Error: {$http_code}",
+                $http_code
+            );
         }
 
-        return $curl_result;
+        return json_decode($curl_result, true);
+    }
+
+    /**
+     * Edit text messages
+     *
+     * @param string|int $chat_id
+     * @param int $message_id
+     * @param string $text
+     * @param string $inline_keyboard
+     * @param string $parse_mode
+     * @param bool $disable_web_page_preview
+     * @return array|bool
+     */
+    public static function editMessageText($chat_id, $message_id, $text, $inline_keyboard = '', $parse_mode = 'HTML', $disable_web_page_preview = false)
+    {
+        if (self::$test_mode) {
+            return [
+                'ok' => true,
+                'result' => ['message_id' => $message_id]
+            ];
+        }
+
+        self::initialize();
+        $params = compact('chat_id', 'message_id', 'text', 'parse_mode', 'disable_web_page_preview');
+        if($inline_keyboard) {
+            $params['reply_markup'] = self::inlineKeyboard($inline_keyboard);
+        }
+        return self::sendRequest('editMessageText', $params);
+    }
+
+    /**
+     * Edit message caption
+     *
+     * @param string|int $chat_id
+     * @param int $message_id
+     * @param string $caption
+     * @param string $inline_keyboard
+     * @return array|bool
+     */
+    public static function editMessageCaption($chat_id, $message_id, $caption, $inline_keyboard = '')
+    {
+        if (self::$test_mode) {
+            return [
+                'ok' => true,
+                'result' => ['message_id' => $message_id]
+            ];
+        }
+
+        self::initialize();
+        $params = compact('chat_id', 'message_id', 'caption');
+        if($inline_keyboard) {
+            $params['reply_markup'] = self::inlineKeyboard($inline_keyboard);
+        }
+        return self::sendRequest('editMessageCaption', $params);
+    }
+
+    /**
+     * Delete a message
+     *
+     * @param string|int $chat_id
+     * @param int $message_id
+     * @return array|bool
+     */
+    public static function deleteMessage($chat_id, $message_id)
+    {
+        if (self::$test_mode) {
+            return ['ok' => true];
+        }
+
+        self::initialize();
+        return self::sendRequest('deleteMessage', compact('chat_id', 'message_id'));
+    }
+
+    /**
+     * Pin a message in a chat
+     *
+     * @param string|int $chat_id
+     * @param int $message_id
+     * @param bool $disable_notification
+     * @return array|bool
+     */
+    public static function pinMessage($chat_id, $message_id, $disable_notification = false)
+    {
+        if (self::$test_mode) {
+            return ['ok' => true];
+        }
+
+        self::initialize();
+        return self::sendRequest('pinChatMessage', compact('chat_id', 'message_id', 'disable_notification'));
+    }
+
+    /**
+     * Unpin a message in a chat
+     *
+     * @param string|int $chat_id
+     * @param int $message_id
+     * @return array|bool
+     */
+    public static function unpinMessage($chat_id, $message_id)
+    {
+        if (self::$test_mode) {
+            return ['ok' => true];
+        }
+
+        self::initialize();
+        return self::sendRequest('unpinChatMessage', compact('chat_id', 'message_id'));
+    }
+
+    /**
+     * Unpin all messages in a chat
+     *
+     * @param string|int $chat_id
+     * @return array|bool
+     */
+    public static function unpinAllMessages($chat_id)
+    {
+        if (self::$test_mode) {
+            return ['ok' => true];
+        }
+
+        self::initialize();
+        return self::sendRequest('unpinAllChatMessages', compact('chat_id'));
     }
 }
