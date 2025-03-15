@@ -469,6 +469,62 @@ The package includes comprehensive test coverage:
 
 This package is open-sourced software licensed under the MIT license.
 
+### License Terms
+
+The MIT License is a permissive license that is short and to the point. It lets people do anything they want with your code as long as they provide attribution back to you and don't hold you liable.
+
+#### What you can do with this package:
+
+- ✅ Use it commercially
+- ✅ Modify it
+- ✅ Distribute it
+- ✅ Use it privately
+- ✅ Sublicense it
+
+#### What you must do:
+
+- ✅ Include the original copyright notice
+- ✅ Include the license text
+
+#### What you cannot do:
+
+- ❌ Hold the author liable
+- ❌ Use the author's name/trademarks without permission
+
+### Copyright Notice
+
+```
+Copyright (c) 2016-2024 Ali Hesari <alihesari.com@gmail.com>
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.
+```
+
+### Third-Party Licenses
+
+This package uses several third-party libraries:
+
+- [dg/twitter-php](https://github.com/dg/twitter-php) - MIT License
+- [facebook/graph-sdk](https://github.com/facebook/php-graph-sdk) - MIT License
+- [illuminate/support](https://github.com/illuminate/support) - MIT License
+
+For more information about third-party licenses, please see the [composer.json](composer.json) file.
+
 ## 👥 Contributing
 
 We welcome contributions to Laravel Social Auto Posting! Here's how you can help:
