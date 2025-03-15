@@ -10,9 +10,9 @@ return [
         'proxy' => false,   // True => Proxy is On | False => Proxy Off
     ],
 
-    'twitter' => [
-        'consurmer_key' => '',
-        'consurmer_secret' => '',
+    'x' => [
+        'consumer_key' => '',
+        'consumer_secret' => '',
         'access_token' => '',
         'access_token_secret' => ''
     ],
