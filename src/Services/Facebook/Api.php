@@ -2,12 +2,12 @@
 
 namespace Toolkito\Larasap\Services\Facebook;
 
-use FacebookAds\Api as FacebookApi;
-use FacebookAds\Object\Page;
-use FacebookAds\Object\Fields\PageFields;
-use Illuminate\Support\Facades\Config;
-use FacebookAds\Logger\CurlLogger;
 use Facebook\Facebook;
+use Facebook\Exceptions\FacebookResponseException;
+use Facebook\Exceptions\FacebookSDKException;
+use Facebook\GraphNodes\GraphNode;
+use Illuminate\Support\Facades\Config;
+use Illuminate\Support\Facades\Log;
 
 class Api
 {
@@ -61,6 +61,13 @@ class Api
     private static $test_mode = false;
 
     /**
+     * Debug mode flag
+     *
+     * @var bool
+     */
+    private static $debug_mode = false;
+
+    /**
      * Enable test mode
      */
     public static function enableTestMode()
@@ -77,6 +84,22 @@ class Api
     }
 
     /**
+     * Enable debug mode
+     */
+    public static function enableDebugMode()
+    {
+        self::$debug_mode = true;
+    }
+
+    /**
+     * Disable debug mode
+     */
+    public static function disableDebugMode()
+    {
+        self::$debug_mode = false;
+    }
+
+    /**
      * Check if test mode is enabled
      *
      * @return bool
@@ -84,6 +107,16 @@ class Api
     public static function isTestMode()
     {
         return self::$test_mode;
+    }
+
+    /**
+     * Check if debug mode is enabled
+     *
+     * @return bool
+     */
+    public static function isDebugMode()
+    {
+        return self::$debug_mode;
     }
 
     /**
@@ -108,11 +141,13 @@ class Api
         }
 
         // Initialize the Facebook API
-        self::$fb = new \Facebook\Facebook([
+        self::$fb = new Facebook([
             'app_id' => self::$app_id,
             'app_secret' => self::$app_secret,
             'default_graph_version' => self::$default_graph_version,
             'default_access_token' => self::$page_access_token,
+            'enable_beta_mode' => Config::get('larasap.facebook.enable_beta_mode', false),
+            'http_client_handler' => Config::get('larasap.facebook.http_client_handler', null),
         ]);
 
         // Initialize the Page instance
@@ -143,10 +178,11 @@ class Api
      *
      * @param string $link
      * @param string $message
+     * @param array $options Additional options for the post
      * @return string|bool Post ID on success, false on failure
      * @throws \Exception
      */
-    public static function sendLink($link, $message = '')
+    public static function sendLink($link, $message = '', $options = [])
     {
         if (self::$test_mode) {
             return '123456789';
@@ -155,19 +191,54 @@ class Api
         self::initialize();
 
         try {
-            $data = [
+            $data = array_merge([
                 'message' => $message,
                 'link' => $link,
-            ];
+                'published' => $options['published'] ?? true,
+                'scheduled_publish_time' => $options['scheduled_publish_time'] ?? null,
+                'backdated_time' => $options['backdated_time'] ?? null,
+                'backdated_time_granularity' => $options['backdated_time_granularity'] ?? null,
+                'child_attachments' => $options['child_attachments'] ?? null,
+                'expanded_height' => $options['expanded_height'] ?? null,
+                'expanded_width' => $options['expanded_width'] ?? null,
+                'full_picture' => $options['full_picture'] ?? null,
+                'is_hidden' => $options['is_hidden'] ?? false,
+                'is_pinned' => $options['is_pinned'] ?? false,
+                'is_expired' => $options['is_expired'] ?? false,
+                'message_tags' => $options['message_tags'] ?? null,
+                'og_action_type_id' => $options['og_action_type_id'] ?? null,
+                'og_icon_id' => $options['og_icon_id'] ?? null,
+                'og_object_id' => $options['og_object_id'] ?? null,
+                'og_phrase' => $options['og_phrase'] ?? null,
+                'og_set_profile_badge' => $options['og_set_profile_badge'] ?? null,
+                'place' => $options['place'] ?? null,
+                'privacy' => $options['privacy'] ?? null,
+                'targeting' => $options['targeting'] ?? null,
+                'user_selected_tags' => $options['user_selected_tags'] ?? null,
+                'with_tags' => $options['with_tags'] ?? null,
+            ], array_filter($options));
+
+            if (self::$debug_mode) {
+                Log::debug('Facebook API Request:', ['endpoint' => '/' . Config::get('larasap.facebook.page_id') . '/feed', 'data' => $data]);
+            }
 
             $response = self::$fb->post('/' . Config::get('larasap.facebook.page_id') . '/feed', $data);
             $graphNode = $response->getGraphNode();
             return $graphNode['id'];
-        } catch (\Facebook\Exceptions\FacebookResponseException $e) {
+        } catch (FacebookResponseException $e) {
+            if (self::$debug_mode) {
+                Log::error('Facebook Graph API Error:', ['error' => $e->getMessage(), 'code' => $e->getCode()]);
+            }
             throw new \Exception('Facebook Graph API Error: ' . $e->getMessage());
-        } catch (\Facebook\Exceptions\FacebookSDKException $e) {
+        } catch (FacebookSDKException $e) {
+            if (self::$debug_mode) {
+                Log::error('Facebook SDK Error:', ['error' => $e->getMessage()]);
+            }
             throw new \Exception('Facebook SDK Error: ' . $e->getMessage());
         } catch (\Exception $e) {
+            if (self::$debug_mode) {
+                Log::error('Facebook API Error:', ['error' => $e->getMessage()]);
+            }
             throw new \Exception('Facebook API Error: ' . $e->getMessage());
         }
     }
@@ -177,10 +248,11 @@ class Api
      *
      * @param string $photo Path to photo file or URL
      * @param string $message
+     * @param array $options Additional options for the photo
      * @return string|bool Post ID on success, false on failure
      * @throws \Exception
      */
-    public static function sendPhoto($photo, $message = '')
+    public static function sendPhoto($photo, $message = '', $options = [])
     {
         if (self::$test_mode) {
             return '123456789';
@@ -189,19 +261,44 @@ class Api
         self::initialize();
 
         try {
-            $data = [
+            $data = array_merge([
                 'message' => $message,
                 'source' => new \CURLFile($photo),
-            ];
+                'published' => $options['published'] ?? true,
+                'scheduled_publish_time' => $options['scheduled_publish_time'] ?? null,
+                'backdated_time' => $options['backdated_time'] ?? null,
+                'backdated_time_granularity' => $options['backdated_time_granularity'] ?? null,
+                'is_hidden' => $options['is_hidden'] ?? false,
+                'is_expired' => $options['is_expired'] ?? false,
+                'message_tags' => $options['message_tags'] ?? null,
+                'place' => $options['place'] ?? null,
+                'privacy' => $options['privacy'] ?? null,
+                'targeting' => $options['targeting'] ?? null,
+                'user_selected_tags' => $options['user_selected_tags'] ?? null,
+                'with_tags' => $options['with_tags'] ?? null,
+            ], array_filter($options));
+
+            if (self::$debug_mode) {
+                Log::debug('Facebook API Request:', ['endpoint' => '/' . Config::get('larasap.facebook.page_id') . '/photos', 'data' => $data]);
+            }
 
             $response = self::$fb->post('/' . Config::get('larasap.facebook.page_id') . '/photos', $data);
             $graphNode = $response->getGraphNode();
             return $graphNode['id'];
-        } catch (\Facebook\Exceptions\FacebookResponseException $e) {
+        } catch (FacebookResponseException $e) {
+            if (self::$debug_mode) {
+                Log::error('Facebook Graph API Error:', ['error' => $e->getMessage(), 'code' => $e->getCode()]);
+            }
             throw new \Exception('Facebook Graph API Error: ' . $e->getMessage());
-        } catch (\Facebook\Exceptions\FacebookSDKException $e) {
+        } catch (FacebookSDKException $e) {
+            if (self::$debug_mode) {
+                Log::error('Facebook SDK Error:', ['error' => $e->getMessage()]);
+            }
             throw new \Exception('Facebook SDK Error: ' . $e->getMessage());
         } catch (\Exception $e) {
+            if (self::$debug_mode) {
+                Log::error('Facebook API Error:', ['error' => $e->getMessage()]);
+            }
             throw new \Exception('Facebook API Error: ' . $e->getMessage());
         }
     }
@@ -212,10 +309,11 @@ class Api
      * @param string $video Path to video file or URL
      * @param string $title
      * @param string $description
+     * @param array $options Additional options for the video
      * @return string|bool Post ID on success, false on failure
      * @throws \Exception
      */
-    public static function sendVideo($video, $title = '', $description = '')
+    public static function sendVideo($video, $title = '', $description = '', $options = [])
     {
         if (self::$test_mode) {
             return '123456789';
@@ -224,20 +322,58 @@ class Api
         self::initialize();
 
         try {
-            $data = [
+            $data = array_merge([
                 'title' => $title,
                 'description' => $description,
                 'source' => new \CURLFile($video),
-            ];
+                'published' => $options['published'] ?? true,
+                'scheduled_publish_time' => $options['scheduled_publish_time'] ?? null,
+                'backdated_time' => $options['backdated_time'] ?? null,
+                'backdated_time_granularity' => $options['backdated_time_granularity'] ?? null,
+                'is_hidden' => $options['is_hidden'] ?? false,
+                'is_expired' => $options['is_expired'] ?? false,
+                'message_tags' => $options['message_tags'] ?? null,
+                'place' => $options['place'] ?? null,
+                'privacy' => $options['privacy'] ?? null,
+                'targeting' => $options['targeting'] ?? null,
+                'user_selected_tags' => $options['user_selected_tags'] ?? null,
+                'with_tags' => $options['with_tags'] ?? null,
+                'file_url' => $options['file_url'] ?? null,
+                'content_category' => $options['content_category'] ?? null,
+                'embeddable' => $options['embeddable'] ?? null,
+                'end_offset' => $options['end_offset'] ?? null,
+                'file_size' => $options['file_size'] ?? null,
+                'formatting' => $options['formatting'] ?? null,
+                'length' => $options['length'] ?? null,
+                'original_fov' => $options['original_fov'] ?? null,
+                'original_projection_type' => $options['original_projection_type'] ?? null,
+                'start_offset' => $options['start_offset'] ?? null,
+                'swap_mode' => $options['swap_mode'] ?? null,
+                'thumb_offset' => $options['thumb_offset'] ?? null,
+                'unpublished_content_type' => $options['unpublished_content_type'] ?? null,
+            ], array_filter($options));
+
+            if (self::$debug_mode) {
+                Log::debug('Facebook API Request:', ['endpoint' => '/' . Config::get('larasap.facebook.page_id') . '/videos', 'data' => $data]);
+            }
 
             $response = self::$fb->post('/' . Config::get('larasap.facebook.page_id') . '/videos', $data);
             $graphNode = $response->getGraphNode();
             return $graphNode['id'];
-        } catch (\Facebook\Exceptions\FacebookResponseException $e) {
+        } catch (FacebookResponseException $e) {
+            if (self::$debug_mode) {
+                Log::error('Facebook Graph API Error:', ['error' => $e->getMessage(), 'code' => $e->getCode()]);
+            }
             throw new \Exception('Facebook Graph API Error: ' . $e->getMessage());
-        } catch (\Facebook\Exceptions\FacebookSDKException $e) {
+        } catch (FacebookSDKException $e) {
+            if (self::$debug_mode) {
+                Log::error('Facebook SDK Error:', ['error' => $e->getMessage()]);
+            }
             throw new \Exception('Facebook SDK Error: ' . $e->getMessage());
         } catch (\Exception $e) {
+            if (self::$debug_mode) {
+                Log::error('Facebook API Error:', ['error' => $e->getMessage()]);
+            }
             throw new \Exception('Facebook API Error: ' . $e->getMessage());
         }
     }
