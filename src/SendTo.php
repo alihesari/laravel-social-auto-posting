@@ -15,49 +15,49 @@ namespace Toolkito\Larasap;
 
 use Illuminate\Support\Facades\Config;
 use Toolkito\Larasap\Services\Telegram\Api AS TelegramApi;
-use Toolkito\Larasap\Services\Twitter\Api AS TwitterApi;
+use Toolkito\Larasap\Services\X\Api AS XApi;
 use Toolkito\Larasap\Services\Facebook\Api AS FacebookApi;
 
 class SendTo
 {
     /**
-     * Sent to Telegram
+     * Send message to Telegram
      *
-     * @param $text
+     * @param string $message
      * @param string $attachment
      * @param string $inline_keyboard
      * @return bool|mixed
      */
-    public static function Telegram($text, $attachment = '', $inline_keyboard = '')
+    public static function telegram($message, $attachment = '', $inline_keyboard = '')
     {
         if (Config::get('larasap.telegram.channel_signature')) {
             $type = isset($attachment['type']) ? 'caption' : 'text';
-            $text = self::assignSignature($text, $type);
+            $message = self::assignSignature($message, $type);
         }
 
         if ($attachment) {
             switch ($attachment['type']) {
                 case 'photo':
-                    $result = TelegramApi::sendPhoto(null, $attachment['file'], $text, $inline_keyboard);
+                    $result = TelegramApi::sendPhoto(null, $attachment['file'], $message, $inline_keyboard);
                     break;
                 case 'audio':
                     $duration = isset($attachment['duration']) ? $attachment['duration'] : '';
                     $performer = isset($attachment['performer']) ? $attachment['performer'] : '';
                     $title = isset($attachment['title']) ? $attachment['title'] : '';
-                    $result = TelegramApi::sendAudio(null, $attachment['file'], $text, $duration, $performer, $title, $inline_keyboard);
+                    $result = TelegramApi::sendAudio(null, $attachment['file'], $message, $duration, $performer, $title, $inline_keyboard);
                     break;
                 case 'document':
-                    $result = TelegramApi::sendDocument(null, $attachment['file'], $text, $inline_keyboard);
+                    $result = TelegramApi::sendDocument(null, $attachment['file'], $message, $inline_keyboard);
                     break;
                 case 'video':
                     $duration = isset($attachment['duration']) ? $attachment['duration'] : '';
                     $width = isset($attachment['width']) ? $attachment['width'] : '';
                     $height = isset($attachment['height']) ? $attachment['height'] : '';
-                    $result = TelegramApi::sendVideo(null, $attachment['file'], $duration, $width, $height, $text, $inline_keyboard);
+                    $result = TelegramApi::sendVideo(null, $attachment['file'], $duration, $width, $height, $message, $inline_keyboard);
                     break;
                 case 'voice':
                     $duration = isset($attachment['duration']) ? $attachment['duration'] : '';
-                    $result = TelegramApi::sendVoice(null, $attachment['file'], $text, $duration, $inline_keyboard);
+                    $result = TelegramApi::sendVoice(null, $attachment['file'], $message, $duration, $inline_keyboard);
                     break;
                 case 'media_group':
                     $result = TelegramApi::sendMediaGroup(null, json_encode($attachment['files']));
@@ -76,23 +76,10 @@ class SendTo
                     break;
             }
         } else {
-            $result = TelegramApi::sendMessage(null, $text, $inline_keyboard);
+            $result = TelegramApi::sendMessage(null, $message, $inline_keyboard);
         }
 
         return $result;
-    }
-
-    /**
-     * Send message to Twitter
-     *
-     * @param $message
-     * @param null $media
-     * @param array $options
-     * @return Twitter\stdClass
-     */
-    public static function Twitter($message, $media = [], $options = [])
-    {
-        return TwitterApi::sendMessage($message, $media, $options);
     }
 
     /**
@@ -102,7 +89,7 @@ class SendTo
      * @param $data
      * @return bool
      */
-    public static function Facebook($type, $data)
+    public static function facebook($type, $data)
     {
         switch ($type) {
             case 'link':
@@ -139,5 +126,17 @@ class SendTo
         }
 
         return substr($text, 0, $max_length - $signature_length) . $signature;
+    }
+
+    /**
+     * Send message to X (formerly Twitter)
+     *
+     * @param string $message
+     * @param array $options
+     * @return bool
+     */
+    public static function x($message, $options = [])
+    {
+        return XApi::init()->sendMessage($message, null, $options);
     }
 }
