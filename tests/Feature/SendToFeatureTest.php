@@ -2,7 +2,7 @@
 
 namespace Toolkito\Larasap\Tests\Feature;
 
-use PHPUnit\Framework\TestCase;
+use Toolkito\Larasap\Tests\TestCase;
 use Toolkito\Larasap\SendTo;
 use Toolkito\Larasap\Services\Telegram\Api as TelegramApi;
 use Toolkito\Larasap\Services\Twitter\Api as TwitterApi;

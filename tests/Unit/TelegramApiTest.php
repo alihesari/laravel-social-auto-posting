@@ -2,7 +2,7 @@
 
 namespace Toolkito\Larasap\Tests\Unit;
 
-use PHPUnit\Framework\TestCase;
+use Toolkito\Larasap\Tests\TestCase;
 use Toolkito\Larasap\Services\Telegram\Api;
 
 class TelegramApiTest extends TestCase
