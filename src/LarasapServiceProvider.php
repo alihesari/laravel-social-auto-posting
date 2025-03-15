@@ -3,9 +3,19 @@
 namespace Toolkito\Larasap;
 
 use Illuminate\Support\ServiceProvider;
+use Illuminate\Contracts\Support\DeferrableProvider;
 
-class LarasapServiceProvider extends ServiceProvider
+class LarasapServiceProvider extends ServiceProvider implements DeferrableProvider
 {
+    /**
+     * All of the container bindings that should be registered.
+     *
+     * @var array<class-string, class-string>
+     */
+    public array $bindings = [
+        'larasap' => SendTo::class,
+    ];
+
     /**
      * Register any application services.
      */
@@ -16,6 +26,11 @@ class LarasapServiceProvider extends ServiceProvider
             __DIR__ . '/../config/config.php',
             'larasap'
         );
+
+        // Register the main class to use with the facade
+        $this->app->singleton('larasap', function () {
+            return new SendTo();
+        });
     }
 
     /**
@@ -23,15 +38,17 @@ class LarasapServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
-        // Publish package's configuration file to the application
-        $this->publishes([
-            __DIR__ . '/../config/config.php' => config_path('larasap.php'),
-        ], 'larasap-config');
+        if ($this->app->runningInConsole()) {
+            // Publish package's configuration file
+            $this->publishes([
+                __DIR__ . '/../config/config.php' => config_path('larasap.php'),
+            ], ['larasap-config', 'larasap']);
 
-        // Publish package's assets
-        $this->publishes([
-            __DIR__ . '/../resources/views' => resource_path('views/vendor/larasap'),
-        ], 'larasap-views');
+            // Publish package's views
+            $this->publishes([
+                __DIR__ . '/../resources/views' => resource_path('views/vendor/larasap'),
+            ], ['larasap-views', 'larasap']);
+        }
     }
 
     /**
