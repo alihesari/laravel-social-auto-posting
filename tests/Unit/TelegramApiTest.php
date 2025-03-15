@@ -147,6 +147,80 @@ class TelegramApiTest extends TestCase
         $this->assertArrayHasKey('message_id', $result['result']);
     }
 
+    public function testEditMessageText()
+    {
+        $result = $this->api->editMessageText('chat_id', 123, 'Updated message');
+        $this->assertIsArray($result);
+        $this->assertTrue($result['ok']);
+        $this->assertArrayHasKey('result', $result);
+        $this->assertEquals(123, $result['result']['message_id']);
+    }
+
+    public function testEditMessageCaption()
+    {
+        $result = $this->api->editMessageCaption('chat_id', 123, 'Updated caption');
+        $this->assertIsArray($result);
+        $this->assertTrue($result['ok']);
+        $this->assertArrayHasKey('result', $result);
+        $this->assertEquals(123, $result['result']['message_id']);
+    }
+
+    public function testDeleteMessage()
+    {
+        $result = $this->api->deleteMessage('chat_id', 123);
+        $this->assertIsArray($result);
+        $this->assertTrue($result['ok']);
+    }
+
+    public function testPinMessage()
+    {
+        $result = $this->api->pinMessage('chat_id', 123);
+        $this->assertIsArray($result);
+        $this->assertTrue($result['ok']);
+    }
+
+    public function testUnpinMessage()
+    {
+        $result = $this->api->unpinMessage('chat_id', 123);
+        $this->assertIsArray($result);
+        $this->assertTrue($result['ok']);
+    }
+
+    public function testUnpinAllMessages()
+    {
+        $result = $this->api->unpinAllMessages('chat_id');
+        $this->assertIsArray($result);
+        $this->assertTrue($result['ok']);
+    }
+
+    public function testErrorHandling()
+    {
+        $this->expectException(TelegramApiException::class);
+        $this->expectExceptionMessage('HTTP Error: 404');
+        
+        // Disable test mode to trigger real API call
+        Api::disableTestMode();
+        
+        // This should fail with a 404
+        $this->api->sendMessage('invalid_chat_id', 'Test message');
+    }
+
+    public function testProxyConfiguration()
+    {
+        $this->expectException(TelegramApiException::class);
+        $this->expectExceptionMessage('Proxy hostname and port are required');
+        
+        // Set invalid proxy configuration
+        config(['larasap.proxy.hostname' => null]);
+        config(['larasap.proxy.port' => null]);
+        
+        // Enable proxy
+        config(['larasap.telegram.proxy' => true]);
+        
+        // This should fail with proxy validation error
+        $this->api->sendMessage('chat_id', 'Test message');
+    }
+
     public function testTestMode()
     {
         Api::enableTestMode();
