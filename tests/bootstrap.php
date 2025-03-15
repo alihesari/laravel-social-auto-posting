@@ -18,7 +18,7 @@ $container->singleton('config', function () {
             'telegram' => [
                 'channel_signature' => '',
             ],
-            'twitter' => [
+            'x' => [
                 'consumer_key' => 'test_key',
                 'consumer_secret' => 'test_secret',
                 'access_token' => 'test_token',

@@ -5,7 +5,7 @@ namespace Toolkito\Larasap\Tests\Feature;
 use Toolkito\Larasap\Tests\TestCase;
 use Toolkito\Larasap\SendTo;
 use Toolkito\Larasap\Services\Telegram\Api as TelegramApi;
-use Toolkito\Larasap\Services\Twitter\Api as TwitterApi;
+use Toolkito\Larasap\Services\X\Api as XApi;
 use Toolkito\Larasap\Services\Facebook\Api as FacebookApi;
 
 class SendToFeatureTest extends TestCase
@@ -18,10 +18,10 @@ class SendToFeatureTest extends TestCase
         config([
             'larasap.telegram.api_token' => 'test_token',
             'larasap.telegram.chat_id' => '123456789',
-            'larasap.twitter.consumer_key' => 'test_consumer_key',
-            'larasap.twitter.consumer_secret' => 'test_consumer_secret',
-            'larasap.twitter.access_token' => 'test_access_token',
-            'larasap.twitter.access_token_secret' => 'test_access_token_secret',
+            'larasap.x.consumer_key' => 'test_consumer_key',
+            'larasap.x.consumer_secret' => 'test_consumer_secret',
+            'larasap.x.access_token' => 'test_access_token',
+            'larasap.x.access_token_secret' => 'test_access_token_secret',
             'larasap.facebook.app_id' => 'test_app_id',
             'larasap.facebook.app_secret' => 'test_app_secret',
             'larasap.facebook.access_token' => 'test_access_token',
@@ -30,7 +30,7 @@ class SendToFeatureTest extends TestCase
 
         // Enable test mode for all APIs
         TelegramApi::enableTestMode();
-        TwitterApi::enableTestMode();
+        XApi::enableTestMode();
         FacebookApi::enableTestMode();
     }
 
@@ -45,12 +45,12 @@ class SendToFeatureTest extends TestCase
     }
 
     /**
-     * Test sending a message to Twitter
+     * Test sending a message to X
      */
-    public function testTwitterMessage()
+    public function testXMessage()
     {
-        $message = "Test tweet";
-        $result = SendTo::Twitter($message);
+        $message = "Test post";
+        $result = SendTo::X($message);
         $this->assertTrue($result);
     }
 
@@ -74,7 +74,7 @@ class SendToFeatureTest extends TestCase
 
         // Disable test mode for all APIs
         TelegramApi::disableTestMode();
-        TwitterApi::disableTestMode();
+        XApi::disableTestMode();
         FacebookApi::disableTestMode();
     }
 } 
