@@ -156,12 +156,12 @@ SendTo::Telegram(
     null,
     [
         'type' => 'venue', // Message type (Required)
-        'latitude' => 36.166048, // Latitude of the location (Required)
-        'longitude' => 58.822121, // Longitude of the location (Required)
-        'title' => 'Khayyam', // Name of the venue (Required)
-        'address' => 'Neyshabur, Razavi Khorasan Province, Iran', // Address of the venue (Required)
-        'foursquare_id' => '', // Foursquare identifier of the venue (Optional)
-        '' // Inline keyboard (Optional)
+        'latitude' => 36.1664345, // Latitude of the venue (Required)
+        'longitude' => 58.8209904, // Longitude of the venue (Required)
+        'title' => 'Test Venue', // Name of the venue (Required)
+        'address' => '123 Test St', // Address of the venue (Required)
+        'foursquare_id' => 'test123' // Foursquare identifier of the venue (Optional)
+    ]
 );
 ```
 #### 📞 Send phone contacts to Telegram:
@@ -217,6 +217,90 @@ SendTo::Telegram(
     ]
 );
 ```
+
+#### ✏️ Edit a message in Telegram:
+```php
+TelegramApi::editMessageText(
+    'chat_id', // Chat ID or username
+    123, // Message ID to edit
+    'Updated message text', // New text
+    'inline_keyboard_json' // Optional inline keyboard
+);
+```
+
+#### 📝 Edit message caption:
+```php
+TelegramApi::editMessageCaption(
+    'chat_id', // Chat ID or username
+    123, // Message ID to edit
+    'Updated caption', // New caption
+    'inline_keyboard_json' // Optional inline keyboard
+);
+```
+
+#### 🗑️ Delete a message:
+```php
+TelegramApi::deleteMessage(
+    'chat_id', // Chat ID or username
+    123 // Message ID to delete
+);
+```
+
+#### 📌 Pin a message:
+```php
+TelegramApi::pinMessage(
+    'chat_id', // Chat ID or username
+    123, // Message ID to pin
+    false // Disable notification (optional)
+);
+```
+
+#### 📌 Unpin a message:
+```php
+TelegramApi::unpinMessage(
+    'chat_id', // Chat ID or username
+    123 // Message ID to unpin
+);
+```
+
+#### 📌 Unpin all messages:
+```php
+TelegramApi::unpinAllMessages(
+    'chat_id' // Chat ID or username
+);
+```
+
+### ⚠️ Error Handling
+The package now includes improved error handling with custom exceptions. All API calls may throw a `TelegramApiException` with detailed error information:
+
+```php
+try {
+    TelegramApi::sendMessage('chat_id', 'Hello');
+} catch (TelegramApiException $e) {
+    echo "Error: " . $e->getMessage();
+    echo "HTTP Code: " . $e->getHttpCode();
+    echo "Error Code: " . $e->getErrorCode();
+    echo "Parameters: " . json_encode($e->getParameters());
+}
+```
+
+### 🔒 Security
+- SSL verification is enabled by default
+- Proxy support with authentication
+- API tokens are handled securely through configuration
+- Rate limiting is handled by Telegram's API
+
+### ⚡ Performance
+- Connection timeout: 10 seconds
+- Request timeout: 30 seconds
+- Automatic JSON encoding/decoding
+- Efficient cURL usage
+
+### 📝 Notes
+- All methods support test mode for development
+- Message length limits are enforced (4096 chars for text, 1024 for captions)
+- Proxy configuration is optional but validated when provided
+
 ### ⭐ Twitter examples:
 #### ✨ Text tweet:
 ```php
