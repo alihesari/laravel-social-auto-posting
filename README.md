@@ -112,6 +112,63 @@ Configure your social media credentials in `config/larasap.php`:
 ]
 ```
 
+### Detailed Configuration Guide
+
+#### Telegram Configuration
+- `api_token`: Your Telegram Bot API token from [@BotFather](https://t.me/botfather)
+- `bot_username`: Your bot's username (without @)
+- `channel_username`: Target channel username (without @)
+- `channel_signature`: Text to be added at the end of each message
+- `proxy`: Enable/disable proxy support (boolean)
+
+#### X (Twitter) Configuration
+- `consumer_key`: Your X API consumer key
+- `consumer_secret`: Your X API consumer secret
+- `access_token`: Your X API access token
+- `access_token_secret`: Your X API access token secret
+
+#### Facebook Configuration
+- `app_id`: Your Meta App ID
+- `app_secret`: Your Meta App Secret
+- `default_graph_version`: Facebook Graph API version (default: v19.0)
+- `page_access_token`: Your Facebook Page Access Token
+- `page_id`: Your Facebook Page ID
+- `enable_beta_mode`: Enable beta features (default: false)
+- `debug_mode`: Enable detailed logging (default: false)
+
+### Environment Variables
+You can also set these values in your `.env` file:
+
+```env
+TELEGRAM_BOT_TOKEN=your_telegram_bot_token
+TELEGRAM_BOT_USERNAME=your_bot_username
+TELEGRAM_CHANNEL_USERNAME=your_channel_username
+TELEGRAM_CHANNEL_SIGNATURE=your_channel_signature
+TELEGRAM_PROXY=false
+
+X_CONSUMER_KEY=your_consumer_key
+X_CONSUMER_SECRET=your_consumer_secret
+X_ACCESS_TOKEN=your_access_token
+X_ACCESS_TOKEN_SECRET=your_access_token_secret
+
+FACEBOOK_APP_ID=your_app_id
+FACEBOOK_APP_SECRET=your_app_secret
+FACEBOOK_PAGE_ACCESS_TOKEN=your_page_access_token
+FACEBOOK_PAGE_ID=your_page_id
+FACEBOOK_ENABLE_BETA_MODE=false
+FACEBOOK_DEBUG_MODE=false
+```
+
+### Configuration Validation
+The package validates all configuration values on initialization. If any required values are missing or invalid, it will throw an exception with a descriptive message.
+
+### Configuration Caching
+For better performance, the package caches the configuration values. If you need to refresh the configuration, you can clear the Laravel configuration cache:
+
+```bash
+php artisan config:clear
+```
+
 ## 🕹 Usage
 
 First, add the following to your controller:
