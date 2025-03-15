@@ -2,15 +2,18 @@
 
 namespace Toolkito\Larasap\Facebook;
 
-use Facebook;
+use FacebookAds\Api as FacebookApi;
+use FacebookAds\Object\Page;
+use FacebookAds\Object\Fields\PageFields;
 use Illuminate\Support\Facades\Config;
+use FacebookAds\Logger\CurlLogger;
 
 class Api
 {
     /**
      * App ID
      *
-     * @var integer
+     * @var string
      */
     private static $app_id;
 
@@ -35,8 +38,25 @@ class Api
      */
     private static $page_access_token;
 
+    /**
+     * Facebook API instance
+     *
+     * @var \FacebookAds\Api
+     */
     private static $fb;
 
+    /**
+     * Page instance
+     *
+     * @var \FacebookAds\Object\Page
+     */
+    private static $page;
+
+    /**
+     * Initialize the Facebook API
+     *
+     * @return void
+     */
     public static function initialize()
     {
         self::$app_id = Config::get('larasap.facebook.app_id');
@@ -44,84 +64,94 @@ class Api
         self::$default_graph_version = Config::get('larasap.facebook.default_graph_version');
         self::$page_access_token = Config::get('larasap.facebook.page_access_token');
 
-        self::$fb = new \Facebook\Facebook([
-            'app_id' => self::$app_id,
-            'app_secret' => self::$app_secret,
-            'default_graph_version' => self::$default_graph_version,
-        ]);
+        // Initialize the Facebook API
+        self::$fb = FacebookApi::init(
+            self::$app_id,
+            self::$app_secret,
+            self::$page_access_token
+        );
+
+        // Enable debug mode in non-production environments
+        if (Config::get('app.debug')) {
+            self::$fb->setLogger(new CurlLogger());
+        }
+
+        // Initialize the Page instance
+        self::$page = new Page(Config::get('larasap.facebook.page_id'));
+        self::$page->setAccessToken(self::$page_access_token);
     }
 
     /**
      * Send link and text message
      *
-     * @param $link
-     * @param $message
-     * @return bool
+     * @param string $link
+     * @param string $message
+     * @return string Post ID
      * @throws \Exception
      */
     public static function sendLink($link, $message = '')
     {
         self::initialize();
-        $data = compact('link', 'message');
-        try {
-            $response = self::$fb->post('/me/feed', $data, self::$page_access_token);
-        } catch(Facebook\Exceptions\FacebookResponseException $e) {
-            throw new \Exception('Graph returned an error: '.$e->getMessage());
-        } catch(Facebook\Exceptions\FacebookSDKException $e) {
-            throw new \Exception('Facebook SDK returned an error: '.$e->getMessage());
-        }
-        $graphNode = $response->getGraphNode();
 
-        return $graphNode['id'];
+        try {
+            $response = self::$page->createFeed([
+                'message' => $message,
+                'link' => $link,
+            ]);
+
+            return $response->id;
+        } catch (\Exception $e) {
+            throw new \Exception('Facebook API Error: ' . $e->getMessage());
+        }
     }
 
     /**
      * Send photo and text message
      *
-     * @param $photo
+     * @param string $photo Path to photo file or URL
      * @param string $message
-     * @return bool
+     * @return string Post ID
      * @throws \Exception
      */
-    public static function sendPhoto($photo ,$message = ''){
+    public static function sendPhoto($photo, $message = '')
+    {
         self::initialize();
-        $data = [
-            'message' => $message,
-            'source' => self::$fb->fileToUpload($photo)
-        ];
-        try {
-            $response = self::$fb->post('/me/photos', $data, self::$page_access_token);
-        } catch(Facebook\Exceptions\FacebookResponseException $e) {
-            throw new \Exception('Graph returned an error: '.$e->getMessage());
-        } catch(Facebook\Exceptions\FacebookSDKException $e) {
-            throw new \Exception('Facebook SDK returned an error: '.$e->getMessage());
-        }
-        $graphNode = $response->getGraphNode();
 
-        return $graphNode['id'];
+        try {
+            $response = self::$page->createPhoto([
+                'message' => $message,
+                'source' => $photo,
+            ]);
+
+            return $response->id;
+        } catch (\Exception $e) {
+            throw new \Exception('Facebook API Error: ' . $e->getMessage());
+        }
     }
 
     /**
      * Send video
      *
-     * @param $video
+     * @param string $video Path to video file or URL
      * @param string $title
      * @param string $description
-     * @return mixed
+     * @return string Post ID
      * @throws \Exception
      */
-    public static function sendVideo($video , $title = '', $description = ''){
+    public static function sendVideo($video, $title = '', $description = '')
+    {
         self::initialize();
-        $data = compact('title','description');
-        try {
-            $response = self::$fb->uploadVideo('me', $video,$data, self::$page_access_token);
-        } catch(Facebook\Exceptions\FacebookResponseException $e) {
-            throw new \Exception('Graph returned an error: '.$e->getMessage());
-        } catch(Facebook\Exceptions\FacebookSDKException $e) {
-            throw new \Exception('Facebook SDK returned an error: '.$e->getMessage());
-        }
-        $graphNode = $response->getGraphNode();
 
-        return $graphNode['id'];
+        try {
+            $response = self::$page->createVideo([
+                'title' => $title,
+                'description' => $description,
+                'source' => $video,
+            ]);
+
+            return $response->id;
+        } catch (\Exception $e) {
+            throw new \Exception('Facebook API Error: ' . $e->getMessage());
+        }
     }
 }
