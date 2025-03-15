@@ -471,7 +471,92 @@ This package is open-sourced software licensed under the MIT license.
 
 ## 👥 Contributing
 
-Contributions are welcome! Please feel free to submit a Pull Request.
+We welcome contributions to Laravel Social Auto Posting! Here's how you can help:
+
+### Development Setup
+
+1. Fork the repository
+2. Clone your fork:
+```bash
+git clone https://github.com/your-username/laravel-social-auto-posting.git
+```
+3. Install dependencies:
+```bash
+composer install
+```
+4. Create a new branch for your feature:
+```bash
+git checkout -b feature/your-feature-name
+```
+
+### Coding Standards
+
+- Follow PSR-12 coding standards
+- Add type hints and return types where possible
+- Write meaningful commit messages following conventional commits
+- Add tests for new features
+- Update documentation for any changes
+
+### Testing
+
+1. Run the test suite:
+```bash
+composer test
+```
+
+2. Run with coverage report:
+```bash
+composer test -- --coverage-html coverage
+```
+
+### Pull Request Process
+
+1. Update the README.md with details of changes if needed
+2. Update the CHANGELOG.md with your changes
+3. The PR will be merged once you have the sign-off of at least one other developer
+
+### Commit Messages
+
+- Use the present tense ("Add feature" not "Added feature")
+- Use the imperative mood ("Move cursor to..." not "Moves cursor to...")
+- Limit the first line to 72 characters or less
+- Reference issues and pull requests liberally after the first line
+- Consider starting the commit message with an applicable emoji:
+  - 🎨 `:art:` when improving the format/structure of the code
+  - 🐎 `:racehorse:` when improving performance
+  - 🚱 `:non-potable_water:` when plugging memory leaks
+  - 📝 `:memo:` when writing docs
+  - 🐛 `:bug:` when fixing a bug
+  - 🔥 `:fire:` when removing code or files
+  - 💚 `:green_heart:` when fixing the CI build
+  - ✅ `:white_check_mark:` when adding tests
+  - 🔒 `:lock:` when dealing with security
+  - ⬆️ `:arrow_up:` when upgrading dependencies
+  - ⬇️ `:arrow_down:` when downgrading dependencies
+
+### Reporting Issues
+
+- Use the issue tracker
+- Describe the bug with a clear and descriptive title
+- Include steps to reproduce the issue
+- Include screenshots if applicable
+- Include your environment details (PHP version, Laravel version, etc.)
+
+### Feature Requests
+
+- Use the issue tracker
+- Describe the feature with a clear and descriptive title
+- Explain why this feature would be useful
+- Include any relevant use cases
+
+### Security
+
+- Report security issues to security@alihesari.com
+- Do not disclose security-related issues publicly until a fix has been announced
+
+### Code of Conduct
+
+By participating in this project, you agree to abide by our Code of Conduct.
 
 ## 🤝 Support
 
