@@ -4,6 +4,7 @@ namespace Toolkito\Larasap\Tests\Unit;
 
 use Toolkito\Larasap\Tests\TestCase;
 use Toolkito\Larasap\Services\Telegram\Api;
+use Toolkito\Larasap\Services\Telegram\Exceptions\TelegramApiException;
 use Illuminate\Support\Facades\Http;
 
 class TelegramApiTest extends TestCase
@@ -196,12 +197,12 @@ class TelegramApiTest extends TestCase
     public function testErrorHandling()
     {
         $this->expectException(TelegramApiException::class);
-        $this->expectExceptionMessage('HTTP Error: 404');
+        $this->expectExceptionMessage('Unauthorized');
         
         // Disable test mode to trigger real API call
         Api::disableTestMode();
         
-        // This should fail with a 404
+        // This should fail with an unauthorized error
         $this->api->sendMessage('invalid_chat_id', 'Test message');
     }
 

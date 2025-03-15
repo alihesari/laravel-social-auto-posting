@@ -14,7 +14,7 @@
 namespace Toolkito\Larasap\Services\Telegram;
 
 use Illuminate\Support\Facades\Config;
-
+use Toolkito\Larasap\Services\Telegram\Exceptions\TelegramApiException;
 
 class Api
 {
