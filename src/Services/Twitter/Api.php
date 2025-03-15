@@ -11,7 +11,7 @@
  * Version:     3.6
  */
 
-namespace Toolkito\Larasap\Twitter;
+namespace Toolkito\Larasap\Services\Twitter;
 
 require_once __DIR__. '/OAuth.php';
 use Illuminate\Support\Facades\Config;
