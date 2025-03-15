@@ -26,7 +26,7 @@ class SendTo
      * @param string $message
      * @param string $attachment
      * @param string $inline_keyboard
-     * @return bool|mixed
+     * @return array|mixed
      */
     public static function telegram($message, $attachment = '', $inline_keyboard = '')
     {
@@ -87,14 +87,14 @@ class SendTo
      *
      * @param $type
      * @param $data
-     * @return bool
+     * @return array
      */
     public static function facebook($type, $data)
     {
         switch ($type) {
             case 'link':
                 $message = isset($data['message']) ? $data['message'] : '';
-                $result = FacebookApi::sendLink($data['link'], $data['message']);
+                $result = FacebookApi::sendLink($data['link'], $message);
                 break;
             case 'photo':
                 $message = isset($data['message']) ? $data['message'] : '';
@@ -104,9 +104,11 @@ class SendTo
                 $description = isset($data['description']) ? $data['description'] : '';
                 $result = FacebookApi::sendVideo($data['video'], $data['title'], $description);
                 break;
+            default:
+                $result = null;
         }
 
-        return ($result > 0) ? true : false;
+        return ['id' => $result];
     }
 
     /**
@@ -133,7 +135,7 @@ class SendTo
      *
      * @param string $message
      * @param array $options
-     * @return bool
+     * @return array
      */
     public static function x($message, $options = [])
     {
