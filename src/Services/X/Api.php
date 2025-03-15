@@ -41,7 +41,7 @@ class Api
     /**
      * @var bool
      */
-    private static $test_mode = false;
+    protected static $test_mode = false;
 
     public function __construct()
     {
@@ -49,6 +49,11 @@ class Api
         self::$consumerSecret = Config::get('larasap.x.consumer_secret');
         self::$accessToken = Config::get('larasap.x.access_token');
         self::$accessTokenSecret = Config::get('larasap.x.access_token_secret');
+
+        if (empty(self::$consumerKey) || empty(self::$consumerSecret) || 
+            empty(self::$accessToken) || empty(self::$accessTokenSecret)) {
+            throw new XApiException('X API credentials are not properly configured');
+        }
     }
 
     /**
@@ -83,39 +88,47 @@ class Api
     }
 
     /**
+     * Check if test mode is enabled
+     *
+     * @return bool
+     */
+    public static function isTestMode()
+    {
+        return self::$test_mode;
+    }
+
+    /**
      * Send a message to X
      *
      * @param string $message The message to send
      * @param string|null $media_path Path to a local media file
      * @param array $options Additional options for the tweet
-     * @return bool true on success
+     * @return array|bool Response data on success, false on failure
      * @throws Exception|GuzzleException
      */
-    public static function sendMessage($message, $media_path = null, $options = [])
+    public function sendMessage($message, $media = null, $options = [])
     {
         if (self::$test_mode) {
-            return true;
+            return [
+                'data' => [
+                    'id' => '1234567890',
+                    'text' => $message
+                ]
+            ];
         }
 
         try {
-            $tweet_data = [
-                'text' => $message,
-            ];
+            $params = ['text' => $message];
 
-            if ($media_path) {
-                $media_id = self::uploadMedia($media_path);
-                if ($media_id) {
-                    $tweet_data['media'] = ['media_ids' => [$media_id]];
-                }
+            if ($media) {
+                $mediaId = $this->uploadMedia($media);
+                $params['media'] = ['media_ids' => [$mediaId]];
             }
 
-            // Merge additional options
-            $tweet_data = array_merge($tweet_data, $options);
-
             $response = Http::withHeaders([
-                'Authorization' => self::getAuthorizationHeader('POST', 'https://api.x.com/2/tweets', $tweet_data),
+                'Authorization' => $this->getAuthorizationHeader('POST', 'https://api.x.com/2/tweets', $params),
                 'Content-Type' => 'application/json',
-            ])->post('https://api.x.com/2/tweets', $tweet_data);
+            ])->post('https://api.x.com/2/tweets', $params);
 
             if (!$response->successful()) {
                 throw new XApiException('Failed to post to X: ' . $response->body());
@@ -134,18 +147,18 @@ class Api
      * @return string|null Media ID on success, null on failure
      * @throws Exception|GuzzleException
      */
-    protected static function uploadMedia($media_path)
+    protected function uploadMedia($mediaPath)
     {
-        if (!file_exists($media_path)) {
-            throw new Exception('Media file not found: ' . $media_path);
+        if (self::$test_mode) {
+            return '1234567890';
         }
 
         try {
-            $media = base64_encode(file_get_contents($media_path));
+            $media = base64_encode(file_get_contents($mediaPath));
             $params = ['media_data' => $media];
 
             $response = Http::withHeaders([
-                'Authorization' => self::getAuthorizationHeader('POST', 'https://upload.x.com/1.1/media/upload.json', $params),
+                'Authorization' => $this->getAuthorizationHeader('POST', 'https://upload.x.com/1.1/media/upload.json', $params),
                 'Content-Type' => 'application/json',
             ])->post('https://upload.x.com/1.1/media/upload.json', $params);
 
