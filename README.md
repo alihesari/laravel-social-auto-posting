@@ -2,13 +2,11 @@
 
 [![Build Status](https://travis-ci.org/toolkito/laravel-social-auto-posting.svg?branch=master)](https://github.com/toolkito/laravel-social-auto-posting) [![GitHub tag](https://img.shields.io/github/tag/bevacqua/awesome-badges.svg)](https://github.com/toolkito/laravel-social-auto-posting) 
 
-# 🌈 Introduction
-This is a Laravel package to post your content to social networks such:
- - Telegram Channel (‌Based on [Telegram Bot API](https://core.telegram.org/bots/api))
- - Twitter
- - Facebook
- 
- ## 🔐 Authentication Methods
+# 🌈 Laravel Social Auto Posting (Larasap)
+
+A powerful Laravel package that enables automated posting to multiple social media platforms including Telegram, X (Twitter), and Facebook. This package provides a simple and elegant way to manage your social media presence.
+
+## 🔐 Authentication Methods
 
 ### X (Twitter) API Authentication
 This package uses OAuth 1.0a for X API authentication because:
@@ -19,345 +17,268 @@ This package uses OAuth 1.0a for X API authentication because:
 
 While X also supports OAuth 2.0, OAuth 1.0a is the recommended choice for this package's use case of automated server-side posting.
 
-## 🚀 Features:
- - 🍒 Simple. Easy to use.
- - 📝 Send text message to Telegram channel
- - 📷 Send photo to Telegram channel
- - 🎵 Send audio to Telegram channel
- - 📖 Send document to Telegram channel
- - 📺 Send video to Telegram channel
- - 🔊 Send voice to Telegram channel
- - 🎴 Send a group of photos or videos as an album to Telegram channel
- - 📍 Send location to Telegram
- - 📌 Send venue to Telegram
- - 📞 Send contact to Telegram
- - 🌐 Send message with url inline keyboard to Telegram channel
- - ✨ Send text and media to Twitter
- - 🎉 Send text and media to Facebook
- 
- ## 🔨 Installation:
- 1. Download and install package via composer:
- 
- ```sh
- composer require toolkito/larasap
- ```
- 2. Run the command below to publish the package config file: `config\larasap.php`
- ```sh
- php artisan vendor:publish --tag=larasap
- ```
- 
- ## 🔌 Configuration:
- Set the social network information in the `config\larasap.php`. 
- 
- ## 🕹 Usage:
- First, add the `use Toolkito\Larasap\SendTo;` in your controller.
- 
- Next, send message to your Telegram channel or Twitter account. 
- 
- ## 🚩 Roadmap
+### Facebook API Authentication
+The package uses Facebook Graph API with Page Access Token for authentication. This provides:
+- Secure access to Facebook Pages
+- Long-lived tokens
+- Granular permissions control
+- Easy integration with Laravel's configuration system
 
-* Improve tests and coverage
-* Improve performance
+### Telegram Bot API Authentication
+Uses Telegram Bot API token for authentication, providing:
+- Simple token-based authentication
+- Secure communication
+- Easy setup process
 
- ## 🌱 Quick examples:
- ### ⭐ Telegram examples:
- #### 📝 Send text message to Telegram:
- ```php
- SendTo::Telegram('Hello, I\'m testing Laravel social auto posting');
- ```
- #### 📷 Send photo to Telegram:
-  ```php
-  SendTo::Telegram(
-      'Hello, I\'m testing Laravel social auto posting', // Photo caption (Optional)
-      [
-          'type' => 'photo', // Message type (Required)
-          'file' => 'https://i.imgur.com/j6bzKQc.jpg' // Image url (Required)
-      ],
-      '' // Inline keyboard (Optional)
-  );
-  ```
- #### 🎵 Send audio to Telegram:
-  ```php
-SendTo::Telegram(
-   'Hello, I\'m testing Laravel social auto posting', // Audio caption (Optional)
-   [
-       'type' => 'audio', // Message type (Required)
-       'file' => 'http://example.com/let-me-be-your-lover.mp3', // Audio url (Required) 
-       'duration' => 208, // Duration of the audio in seconds (Optional)
-       'performer' => 'Enrique Iglesias', // Performer (Optional)
-       'title' => 'Let Me Be Your Lover' // Track name (Optional)
-   ],
-  '' // Inline keyboard (Optional)
-);
+## 🚀 Features
+
+### Telegram Features
+- 📝 Send text messages
+- 📷 Send photos with captions
+- 🎵 Send audio files with metadata
+- 📖 Send documents
+- 📺 Send videos with metadata
+- 🔊 Send voice messages
+- 🎴 Send media groups (2-10 items)
+- 📍 Send locations
+- 📌 Send venues
+- 📞 Send contacts
+- 🌐 Send messages with inline keyboards
+- ✏️ Edit messages and captions
+- 📌 Pin/unpin messages
+- 🔄 Message retry with backoff
+
+### X (Twitter) Features
+- ✨ Send text tweets
+- 🖼️ Send tweets with media (up to 4 items)
+- 🗣️ Reply to tweets
+- 💬 Quote tweets
+- 📊 Create polls
+- 📍 Add location to tweets
+- ⏰ Schedule tweets
+- 🔄 Rate limit handling
+- 🔄 Automatic retry with backoff
+
+### Facebook Features
+- 🔗 Share links with descriptions
+- 📸 Post photos with captions
+- 🎥 Share videos with titles and descriptions
+- ⏰ Schedule posts
+- 🔒 Privacy controls
+- 🎯 Post targeting
+- 📊 Debug mode
+- 🔄 Error handling and logging
+
+## 🔨 Installation
+
+1. Install the package via Composer:
+```sh
+composer require toolkito/larasap
 ```
-#### 📖 Send document to Telegram:
- ```php
-SendTo::Telegram(
-    'Hello, I\'m testing Laravel social auto posting', // Document caption
+
+2. Publish the configuration file:
+```sh
+php artisan vendor:publish --tag=larasap
+```
+
+## 🔌 Configuration
+
+Configure your social media credentials in `config/larasap.php`:
+
+```php
+'telegram' => [
+    'api_token' => 'your_telegram_bot_token',
+    'bot_username' => 'your_bot_username',
+    'channel_username' => 'your_channel_username',
+    'channel_signature' => 'your_channel_signature',
+    'proxy' => false,
+],
+
+'x' => [
+    'consumer_key' => 'your_consumer_key',
+    'consumer_secret' => 'your_consumer_secret',
+    'access_token' => 'your_access_token',
+    'access_token_secret' => 'your_access_token_secret'
+],
+
+'facebook' => [
+    'app_id' => 'your_app_id',
+    'app_secret' => 'your_app_secret',
+    'default_graph_version' => 'v19.0',
+    'page_access_token' => 'your_page_access_token',
+    'page_id' => 'your_page_id',
+    'enable_beta_mode' => false,
+    'debug_mode' => false,
+]
+```
+
+## 🕹 Usage
+
+First, add the following to your controller:
+```php
+use Toolkito\Larasap\SendTo;
+```
+
+### Telegram Examples
+
+#### Send Text Message
+```php
+SendTo::telegram('Hello, I\'m testing Laravel social auto posting');
+```
+
+#### Send Photo
+```php
+SendTo::telegram(
+    'Photo caption', // Optional
     [
-        'type' => 'document', // Message type (Required)
-        'file' => 'http://example.com/larasap.pdf', // Document url (Required)
-    ],
-   '' // Inline keyboard (Optional)
+        'type' => 'photo',
+        'file' => 'https://example.com/photo.jpg'
+    ]
 );
 ```
-#### 📺 Send video to Telegram:
- ```php
-SendTo::Telegram(
-   'Hello, I\'m testing Laravel social auto posting', // Video caption (Optional)
-   [
-       'type' => 'video', // Message type (Required)
-       'file' => 'http://example.com/let-me-be-your-lover.mp4', // Audio url (Required) 
-       'duration' => 273, // Duration of sent video in seconds (Optional)
-       'width' => 1920, // Video width (Optional)
-       'height' => 1080 // Video height (Optional)
-   ],
-  '' // Inline keyboard (Optional)
-);
-```
-#### 🔊 Send voice to Telegram:
- ```php
-SendTo::Telegram(
-   'Hello, I\'m testing Laravel social auto posting', // Voice message caption (Optional)
-   [
-       'type' => 'voice', // Message type (Required)
-       'file' => 'https://upload.wikimedia.org/wikipedia/en/9/9f/Sample_of_%22Another_Day_in_Paradise%22.ogg', // Audio url (Required) 
-       'duration' => 28 // Duration of the voice message in seconds (Optional)
-   ],
-  '' // Inline keyboard (Optional)
-);
-```
-#### 🎴 Send media group to Telegram:
- ```php
-SendTo::Telegram(
+
+#### Send Media Group
+```php
+SendTo::telegram(
     null,
     [
-        'type' => 'media_group', // Message type (Required)
-        'files' => // Array describing photos and videos to be sent, must include 2–10 items
-        [
+        'type' => 'media_group',
+        'files' => [
             [
-                'type' => 'photo', // Media type (Required)
-                'media' => 'https://i.imgur.com/j6bzKQc.jpg', // Media url (Required)
-                'caption' => 'Laravel sccial auto posting' // Media caption (Optional)
+                'type' => 'photo',
+                'media' => 'https://example.com/photo1.jpg',
+                'caption' => 'First photo'
             ],
             [
-                'type' => 'video', // Media type (Required)
-                'media' => 'http://example.com/let-me-be-your-lover.mp4', // Media url (Required)
-                'caption' => 'Let me be your lover' // Media caption (Optional)
+                'type' => 'video',
+                'media' => 'https://example.com/video1.mp4',
+                'caption' => 'First video'
             ]
         ]
     ]
 );
 ```
-#### 📍 Send point on the map to Telegram:
+
+### X (Twitter) Examples
+
+#### Send Tweet
 ```php
-SendTo::Telegram(
-    null,
-    [
-        'type' => 'location', // Message type (Required)
-        'latitude' => 36.1664345, // Latitude of the location (Required)
-        'longitude' => 58.8209904, // Longitude of the location (Required)
-        'live_period' => 86400, // Period in seconds for which the location will be updated (Optional)
-        '' // Inline keyboard (Optional)
-);
+SendTo::x('Hello, I\'m testing Laravel social auto posting');
 ```
-#### 📌 Send information about a venue to Telegram:
+
+#### Send Tweet with Media
 ```php
-SendTo::Telegram(
-    null,
+SendTo::x(
+    'Check out this photo!',
     [
-        'type' => 'venue', // Message type (Required)
-        'latitude' => 36.1664345, // Latitude of the venue (Required)
-        'longitude' => 58.8209904, // Longitude of the venue (Required)
-        'title' => 'Test Venue', // Name of the venue (Required)
-        'address' => '123 Test St', // Address of the venue (Required)
-        'foursquare_id' => 'test123' // Foursquare identifier of the venue (Optional)
+        'media' => ['path/to/photo.jpg']
     ]
 );
 ```
-#### 📞 Send phone contacts to Telegram:
+
+#### Create Poll
 ```php
-SendTo::Telegram(
-    null,
+SendTo::x(
+    'What\'s your favorite programming language?',
     [
-        'type' => 'contact', // Message type (Required)
-        'phone_number' => '+12025550149', // Contact's phone number (Required)
-        'first_name' => 'John', // Contact's first name (Required)
-        'last_name' => 'Doe', // Contact's last name (Optional)
-        '' // Inline keyboard (Optional)
-    ]
-);
-```
-#### 🌐 Send message with inline button to Telegram:
-```php
-SendTo::Telegram(
-    'Laravel social auto posting',
-    '',
-    [
-        [
-            [
-                'text' => 'Github',
-                'url' => 'https://github.com/toolkito/laravel-social-auto-posting'
-            ]
-        ],
-        [
-            [
-                'text' => 'Download',
-                'url' => 'https://github.com/toolkito/laravel-social-auto-posting/archive/master.zip'
-            ],
-        ]
-    ]
-);
-```
-Or
-```php
-SendTo::Telegram(
-    'Laravel social auto posting',
-    '',
-    [
-        [
-            [
-                'text' => 'Github',
-                'url' => 'https://github.com/toolkito/laravel-social-auto-posting'
-            ],
-            [
-                'text' => 'Download',
-                'url' => 'https://github.com/toolkito/laravel-social-auto-posting/archive/master.zip'
-            ],
+        'poll' => [
+            'options' => ['PHP', 'Python', 'JavaScript', 'Java'],
+            'duration_minutes' => 1440
         ]
     ]
 );
 ```
 
-#### ✏️ Edit a message in Telegram:
+### Facebook Examples
+
+#### Share Link
 ```php
-TelegramApi::editMessageText(
-    'chat_id', // Chat ID or username
-    123, // Message ID to edit
-    'Updated message text', // New text
-    'inline_keyboard_json' // Optional inline keyboard
+SendTo::facebook(
+    'link',
+    [
+        'link' => 'https://github.com/toolkito/laravel-social-auto-posting',
+        'message' => 'Check out this awesome package!'
+    ]
 );
 ```
 
-#### 📝 Edit message caption:
+#### Share Photo
 ```php
-TelegramApi::editMessageCaption(
-    'chat_id', // Chat ID or username
-    123, // Message ID to edit
-    'Updated caption', // New caption
-    'inline_keyboard_json' // Optional inline keyboard
+SendTo::facebook(
+    'photo',
+    [
+        'photo' => 'path/to/photo.jpg',
+        'message' => 'Beautiful sunset!'
+    ]
 );
 ```
 
-#### 🗑️ Delete a message:
+#### Share Video
 ```php
-TelegramApi::deleteMessage(
-    'chat_id', // Chat ID or username
-    123 // Message ID to delete
+SendTo::facebook(
+    'video',
+    [
+        'video' => 'path/to/video.mp4',
+        'title' => 'My Video',
+        'description' => 'Check out this amazing video!'
+    ]
 );
 ```
 
-#### 📌 Pin a message:
-```php
-TelegramApi::pinMessage(
-    'chat_id', // Chat ID or username
-    123, // Message ID to pin
-    false // Disable notification (optional)
-);
-```
+## 🔒 Security Features
 
-#### 📌 Unpin a message:
-```php
-TelegramApi::unpinMessage(
-    'chat_id', // Chat ID or username
-    123 // Message ID to unpin
-);
-```
-
-#### 📌 Unpin all messages:
-```php
-TelegramApi::unpinAllMessages(
-    'chat_id' // Chat ID or username
-);
-```
-
-### ⚠️ Error Handling
-The package now includes improved error handling with custom exceptions. All API calls may throw a `TelegramApiException` with detailed error information:
-
-```php
-try {
-    TelegramApi::sendMessage('chat_id', 'Hello');
-} catch (TelegramApiException $e) {
-    echo "Error: " . $e->getMessage();
-    echo "HTTP Code: " . $e->getHttpCode();
-    echo "Error Code: " . $e->getErrorCode();
-    echo "Parameters: " . json_encode($e->getParameters());
-}
-```
-
-### 🔒 Security
-- SSL verification is enabled by default
+- SSL verification enabled by default
 - Proxy support with authentication
-- API tokens are handled securely through configuration
-- Rate limiting is handled by Telegram's API
+- Secure API token handling
+- Rate limiting protection
+- Input validation and sanitization
+- Error handling with custom exceptions
 
-### ⚡ Performance
+## ⚡ Performance Features
+
 - Connection timeout: 10 seconds
 - Request timeout: 30 seconds
 - Automatic JSON encoding/decoding
 - Efficient cURL usage
+- Retry mechanism with exponential backoff
+- Rate limit handling
 
-### 📝 Notes
+## 🧪 Testing
+
+The package includes comprehensive test coverage:
+- Unit tests for all components
+- Feature tests for integration
+- Mock responses for API calls
+- Test mode for development
+
+## 📝 Notes
+
 - All methods support test mode for development
 - Message length limits are enforced (4096 chars for text, 1024 for captions)
 - Proxy configuration is optional but validated when provided
+- Debug mode available for Facebook API
+- Beta mode support for testing new features
 
-### ⭐ Twitter examples:
-#### ✨ Text tweet:
-```php
-SendTo::Twitter('Hello, I\'m testing Laravel social auto posting');
-```
-#### ✨ Tweet with media:
-```php
-SendTo::Twitter(
-    'Hello, I\'m testing Laravel social auto posting',
-    [
-        public_path('photo-1.jpg'),
-        public_path('photo-2.jpg')
-    ]
-);
-```
-### ⭐ Facebook examples:
-#### 🎉 Send link to Facebook page:
-```php
-SendTo::Facebook(
-    'link',
-    [
-        'link' => 'https://github.com/toolkito/laravel-social-auto-posting',
-        'message' => 'Laravel social auto posting'
-    ]
-);
-```
-#### 🎉 Send photo to Facebook page:
-```php
-SendTo::Facebook(
-    'photo',
-    [
-        'photo' => public_path('img/1.jpg'),
-        'message' => 'Laravel social auto posting'
-    ]
-);
-```
-#### 🎉 Send video to Facebook page:
-```php
-SendTo::Facebook(
-    'video',
-    [
-        'video' => public_path('upload/1.mp4'),
-        'title' => 'Let Me Be Your Lover',
-        'description' => 'Let Me Be Your Lover - Enrique Iglesias'
-    ]
-);
-```
+## 🚩 Roadmap
+
+- [ ] Improve test coverage
+- [ ] Add support for more social media platforms
+- [ ] Implement queue system for better performance
+- [ ] Add support for story posting
+- [ ] Implement analytics tracking
+- [ ] Add support for carousel posts
+- [ ] Implement bulk posting features
+
+## 📄 License
+
+This package is open-sourced software licensed under the MIT license.
+
+## 👥 Contributing
+
+Contributions are welcome! Please feel free to submit a Pull Request.
+
+## 🤝 Support
+
+If you encounter any issues or have questions, please open an issue on GitHub.
 
 
