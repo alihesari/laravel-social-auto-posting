@@ -14,9 +14,9 @@
 namespace Toolkito\Larasap;
 
 use Illuminate\Support\Facades\Config;
-use Toolkito\Larasap\Telegram\Api AS TelegramApi;
-use Toolkito\Larasap\Twitter\Api AS TwitterApi;
-use Toolkito\Larasap\Facebook\Api AS FacebookApi;
+use Toolkito\Larasap\Services\Telegram\Api AS TelegramApi;
+use Toolkito\Larasap\Services\Twitter\Api AS TwitterApi;
+use Toolkito\Larasap\Services\Facebook\Api AS FacebookApi;
 
 class SendTo
 {
