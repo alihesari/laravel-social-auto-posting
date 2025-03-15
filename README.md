@@ -178,57 +178,135 @@ use Toolkito\Larasap\SendTo;
 
 ### Telegram Examples
 
-#### Send Text Message
+#### Basic Text Message
 ```php
 SendTo::telegram('Hello, I\'m testing Laravel social auto posting');
 ```
 
-#### Send Photo
+#### Text Message with Inline Keyboard
 ```php
 SendTo::telegram(
-    'Photo caption', // Optional
+    'Check out our website!',
+    '',
     [
-        'type' => 'photo',
-        'file' => 'https://example.com/photo.jpg'
-    ]
-);
-```
-
-#### Send Media Group
-```php
-SendTo::telegram(
-    null,
-    [
-        'type' => 'media_group',
-        'files' => [
+        [
             [
-                'type' => 'photo',
-                'media' => 'https://example.com/photo1.jpg',
-                'caption' => 'First photo'
+                'text' => 'Visit Website',
+                'url' => 'https://example.com'
             ],
             [
-                'type' => 'video',
-                'media' => 'https://example.com/video1.mp4',
-                'caption' => 'First video'
+                'text' => 'Follow Us',
+                'url' => 'https://t.me/yourchannel'
             ]
         ]
     ]
 );
 ```
 
-### X (Twitter) Examples
-
-#### Send Tweet
+#### Send Photo with Caption
 ```php
-SendTo::x('Hello, I\'m testing Laravel social auto posting');
+SendTo::telegram(
+    'Beautiful sunset! 🌅',
+    [
+        'type' => 'photo',
+        'file' => 'https://example.com/sunset.jpg',
+        'width' => 1920,
+        'height' => 1080
+    ]
+);
 ```
 
-#### Send Tweet with Media
+#### Send Audio File
+```php
+SendTo::telegram(
+    'Listen to our podcast! 🎧',
+    [
+        'type' => 'audio',
+        'file' => 'https://example.com/podcast.mp3',
+        'duration' => 1800,
+        'performer' => 'Your Podcast Name',
+        'title' => 'Episode 1'
+    ]
+);
+```
+
+#### Send Video with Thumbnail
+```php
+SendTo::telegram(
+    'Watch our latest video! 🎥',
+    [
+        'type' => 'video',
+        'file' => 'https://example.com/video.mp4',
+        'thumb' => 'https://example.com/thumbnail.jpg',
+        'duration' => 300,
+        'width' => 1920,
+        'height' => 1080
+    ]
+);
+```
+
+#### Send Document
+```php
+SendTo::telegram(
+    'Download our whitepaper! 📄',
+    [
+        'type' => 'document',
+        'file' => 'https://example.com/whitepaper.pdf',
+        'thumb' => 'https://example.com/thumb.jpg'
+    ]
+);
+```
+
+#### Send Location
+```php
+SendTo::telegram(
+    null,
+    [
+        'type' => 'location',
+        'latitude' => 40.7128,
+        'longitude' => -74.0060,
+        'live_period' => 3600
+    ]
+);
+```
+
+### X (Twitter) Examples
+
+#### Basic Tweet
+```php
+SendTo::x('Hello, I\'m testing Laravel social auto posting!');
+```
+
+#### Tweet with Media
 ```php
 SendTo::x(
-    'Check out this photo!',
+    'Check out these amazing photos! 📸',
     [
-        'media' => ['path/to/photo.jpg']
+        'media' => [
+            'path/to/photo1.jpg',
+            'path/to/photo2.jpg',
+            'path/to/photo3.jpg'
+        ]
+    ]
+);
+```
+
+#### Reply to Tweet
+```php
+SendTo::x(
+    'Thanks for your feedback!',
+    [
+        'reply_to' => '1234567890'
+    ]
+);
+```
+
+#### Quote Tweet
+```php
+SendTo::x(
+    'This is a great point!',
+    [
+        'quote_tweet_id' => '1234567890'
     ]
 );
 ```
@@ -246,38 +324,99 @@ SendTo::x(
 );
 ```
 
+#### Tweet with Location
+```php
+SendTo::x(
+    'Check out this amazing place!',
+    [
+        'location' => [
+            'place_id' => 'abc123xyz'
+        ]
+    ]
+);
+```
+
 ### Facebook Examples
 
-#### Share Link
+#### Share Link with Custom Message
 ```php
 SendTo::facebook(
     'link',
     [
         'link' => 'https://github.com/toolkito/laravel-social-auto-posting',
-        'message' => 'Check out this awesome package!'
+        'message' => 'Check out this awesome package!',
+        'privacy' => [
+            'value' => 'EVERYONE'
+        ]
     ]
 );
 ```
 
-#### Share Photo
+#### Share Photo with Caption
 ```php
 SendTo::facebook(
     'photo',
     [
         'photo' => 'path/to/photo.jpg',
-        'message' => 'Beautiful sunset!'
+        'message' => 'Beautiful sunset! 🌅',
+        'targeting' => [
+            'countries' => ['US', 'CA'],
+            'age_min' => 18,
+            'age_max' => 65
+        ]
     ]
 );
 ```
 
-#### Share Video
+#### Share Video with Metadata
 ```php
 SendTo::facebook(
     'video',
     [
         'video' => 'path/to/video.mp4',
-        'title' => 'My Video',
-        'description' => 'Check out this amazing video!'
+        'title' => 'My Amazing Video',
+        'description' => 'Check out this amazing video!',
+        'privacy' => [
+            'value' => 'FRIENDS'
+        ],
+        'scheduled_publish_time' => strtotime('+1 day')
+    ]
+);
+```
+
+#### Share with Custom Privacy Settings
+```php
+SendTo::facebook(
+    'link',
+    [
+        'link' => 'https://example.com',
+        'message' => 'Private post',
+        'privacy' => [
+            'value' => 'CUSTOM',
+            'friends' => 'ALL_FRIENDS',
+            'allow' => '123456789',
+            'deny' => '987654321'
+        ]
+    ]
+);
+```
+
+#### Share with Targeting
+```php
+SendTo::facebook(
+    'photo',
+    [
+        'photo' => 'path/to/photo.jpg',
+        'message' => 'Targeted post',
+        'targeting' => [
+            'countries' => ['US'],
+            'regions' => ['CA'],
+            'cities' => ['San Francisco'],
+            'age_min' => 21,
+            'age_max' => 35,
+            'genders' => ['male', 'female'],
+            'interests' => ['Technology', 'Programming']
+        ]
     ]
 );
 ```
