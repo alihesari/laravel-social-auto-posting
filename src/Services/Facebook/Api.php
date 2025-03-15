@@ -30,7 +30,7 @@ class Api
      *
      * @var string
      */
-    private static $default_graph_version;
+    private static $default_graph_version = 'v19.0';
 
     /**
      * Page access Token
@@ -42,14 +42,14 @@ class Api
     /**
      * Facebook API instance
      *
-     * @var \FacebookAds\Api
+     * @var \Facebook\Facebook
      */
     private static $fb;
 
     /**
      * Page instance
      *
-     * @var \FacebookAds\Object\Page
+     * @var \Facebook\GraphNodes\GraphNode
      */
     private static $page;
 
@@ -100,32 +100,26 @@ class Api
 
         self::$app_id = Config::get('larasap.facebook.app_id');
         self::$app_secret = Config::get('larasap.facebook.app_secret');
-        self::$default_graph_version = Config::get('larasap.facebook.default_graph_version');
-        self::$page_access_token = Config::get('larasap.facebook.access_token');
+        self::$default_graph_version = Config::get('larasap.facebook.default_graph_version', 'v19.0');
+        self::$page_access_token = Config::get('larasap.facebook.page_access_token');
 
         if (!self::$app_id || !self::$app_secret || !self::$page_access_token) {
             throw new \Exception('Facebook API credentials are not properly configured.');
         }
 
         // Initialize the Facebook API
-        self::$fb = FacebookApi::init(
-            self::$app_id,
-            self::$app_secret,
-            self::$page_access_token
-        );
-
-        // Enable debug mode in non-production environments
-        if (Config::get('app.debug')) {
-            self::$fb->setLogger(new CurlLogger());
-        }
+        self::$fb = new \Facebook\Facebook([
+            'app_id' => self::$app_id,
+            'app_secret' => self::$app_secret,
+            'default_graph_version' => self::$default_graph_version,
+            'default_access_token' => self::$page_access_token,
+        ]);
 
         // Initialize the Page instance
         $pageId = Config::get('larasap.facebook.page_id');
         if (!$pageId) {
             throw new \Exception('Facebook Page ID is not configured.');
         }
-        self::$page = new Page($pageId);
-        self::$page->setData(['access_token' => self::$page_access_token]);
     }
 
     /**
@@ -161,12 +155,18 @@ class Api
         self::initialize();
 
         try {
-            $response = self::$page->createFeed([
+            $data = [
                 'message' => $message,
                 'link' => $link,
-            ]);
+            ];
 
-            return $response->id;
+            $response = self::$fb->post('/' . Config::get('larasap.facebook.page_id') . '/feed', $data);
+            $graphNode = $response->getGraphNode();
+            return $graphNode['id'];
+        } catch (\Facebook\Exceptions\FacebookResponseException $e) {
+            throw new \Exception('Facebook Graph API Error: ' . $e->getMessage());
+        } catch (\Facebook\Exceptions\FacebookSDKException $e) {
+            throw new \Exception('Facebook SDK Error: ' . $e->getMessage());
         } catch (\Exception $e) {
             throw new \Exception('Facebook API Error: ' . $e->getMessage());
         }
@@ -189,12 +189,18 @@ class Api
         self::initialize();
 
         try {
-            $response = self::$page->createPhoto([
+            $data = [
                 'message' => $message,
-                'source' => $photo,
-            ]);
+                'source' => new \CURLFile($photo),
+            ];
 
-            return $response->id;
+            $response = self::$fb->post('/' . Config::get('larasap.facebook.page_id') . '/photos', $data);
+            $graphNode = $response->getGraphNode();
+            return $graphNode['id'];
+        } catch (\Facebook\Exceptions\FacebookResponseException $e) {
+            throw new \Exception('Facebook Graph API Error: ' . $e->getMessage());
+        } catch (\Facebook\Exceptions\FacebookSDKException $e) {
+            throw new \Exception('Facebook SDK Error: ' . $e->getMessage());
         } catch (\Exception $e) {
             throw new \Exception('Facebook API Error: ' . $e->getMessage());
         }
@@ -218,13 +224,19 @@ class Api
         self::initialize();
 
         try {
-            $response = self::$page->createVideo([
+            $data = [
                 'title' => $title,
                 'description' => $description,
-                'source' => $video,
-            ]);
+                'source' => new \CURLFile($video),
+            ];
 
-            return $response->id;
+            $response = self::$fb->post('/' . Config::get('larasap.facebook.page_id') . '/videos', $data);
+            $graphNode = $response->getGraphNode();
+            return $graphNode['id'];
+        } catch (\Facebook\Exceptions\FacebookResponseException $e) {
+            throw new \Exception('Facebook Graph API Error: ' . $e->getMessage());
+        } catch (\Facebook\Exceptions\FacebookSDKException $e) {
+            throw new \Exception('Facebook SDK Error: ' . $e->getMessage());
         } catch (\Exception $e) {
             throw new \Exception('Facebook API Error: ' . $e->getMessage());
         }

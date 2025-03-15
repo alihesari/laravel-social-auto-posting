@@ -20,7 +20,7 @@ return [
     'facebook' => [
         'app_id' => '', // Your Meta App ID
         'app_secret' => '', // Your Meta App Secret
-        'default_graph_version' => 'v18.0', // Meta Graph API version
+        'default_graph_version' => 'v19.0', // Meta Graph API version
         'page_access_token' => '', // Your Facebook Page Access Token
         'page_id' => '', // Your Facebook Page ID
     ],
