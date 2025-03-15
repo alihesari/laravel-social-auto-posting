@@ -8,7 +8,18 @@ This is a Laravel package to post your content to social networks such:
  - Twitter
  - Facebook
  
- ## 🚀 Features:
+ ## 🔐 Authentication Methods
+
+### X (Twitter) API Authentication
+This package uses OAuth 1.0a for X API authentication because:
+- It's better suited for server-side automated posting
+- Provides simpler implementation for Laravel applications
+- No need to handle token refresh flows
+- Works well with Laravel's configuration system
+
+While X also supports OAuth 2.0, OAuth 1.0a is the recommended choice for this package's use case of automated server-side posting.
+
+## 🚀 Features:
  - 🍒 Simple. Easy to use.
  - 📝 Send text message to Telegram channel
  - 📷 Send photo to Telegram channel
