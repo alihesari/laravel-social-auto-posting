@@ -101,7 +101,7 @@ class Api
      * Send a message to X
      *
      * @param string $message The message to send
-     * @param string|null $media_path Path to a local media file
+     * @param array|string|null $media Path to a local media file or array of media paths
      * @param array $options Additional options for the tweet
      * @return array|bool Response data on success, false on failure
      * @throws Exception|GuzzleException
@@ -120,9 +120,52 @@ class Api
         try {
             $params = ['text' => $message];
 
+            // Handle media attachments
             if ($media) {
-                $mediaId = $this->uploadMedia($media);
-                $params['media'] = ['media_ids' => [$mediaId]];
+                $mediaIds = [];
+                $media = is_array($media) ? $media : [$media];
+                
+                foreach ($media as $mediaPath) {
+                    if (count($mediaIds) >= 4) {
+                        throw new XApiException('Maximum of 4 media attachments allowed per tweet');
+                    }
+                    $mediaIds[] = $this->uploadMedia($mediaPath);
+                }
+                
+                $params['media'] = ['media_ids' => $mediaIds];
+            }
+
+            // Handle reply to tweet
+            if (!empty($options['reply_to'])) {
+                $params['reply'] = ['in_reply_to_tweet_id' => $options['reply_to']];
+            }
+
+            // Handle quote tweet
+            if (!empty($options['quote_tweet_id'])) {
+                $params['quote_tweet_id'] = $options['quote_tweet_id'];
+            }
+
+            // Handle poll
+            if (!empty($options['poll'])) {
+                if (count($options['poll']['options']) < 2 || count($options['poll']['options']) > 4) {
+                    throw new XApiException('Poll must have between 2 and 4 options');
+                }
+                $params['poll'] = [
+                    'options' => $options['poll']['options'],
+                    'duration_minutes' => $options['poll']['duration_minutes'] ?? 1440
+                ];
+            }
+
+            // Handle location
+            if (!empty($options['location'])) {
+                $params['geo'] = [
+                    'place_id' => $options['location']['place_id']
+                ];
+            }
+
+            // Handle scheduled time
+            if (!empty($options['scheduled_time'])) {
+                $params['scheduled_time'] = $options['scheduled_time'];
             }
 
             $response = Http::withHeaders([
@@ -154,6 +197,29 @@ class Api
         }
 
         try {
+            // Check file type and size
+            $mimeType = mime_content_type($mediaPath);
+            $fileSize = filesize($mediaPath);
+            
+            // Validate file type
+            $allowedTypes = [
+                'image/jpeg',
+                'image/png',
+                'image/gif',
+                'video/mp4',
+                'video/quicktime'
+            ];
+            
+            if (!in_array($mimeType, $allowedTypes)) {
+                throw new XApiException('Unsupported media type: ' . $mimeType);
+            }
+            
+            // Validate file size (5MB for images, 512MB for videos)
+            $maxSize = strpos($mimeType, 'video/') === 0 ? 512 * 1024 * 1024 : 5 * 1024 * 1024;
+            if ($fileSize > $maxSize) {
+                throw new XApiException('Media file exceeds maximum size limit');
+            }
+
             $media = base64_encode(file_get_contents($mediaPath));
             $params = ['media_data' => $media];
 
