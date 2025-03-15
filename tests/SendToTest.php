@@ -1,14 +1,19 @@
 <?php
 
-class SendToTest extends PHPUnit_Framework_TestCase
+namespace Toolkito\Larasap\Tests;
+
+use PHPUnit\Framework\TestCase;
+use Toolkito\Larasap\SendTo;
+
+class SendToTest extends TestCase
 {
     /**
-     * A basic test example.
+     * Test that the SendTo class can be instantiated
      *
      * @return void
      */
-    public function testExample()
+    public function testSendToClassExists()
     {
-        $this->assertTrue(true);
+        $this->assertTrue(class_exists(SendTo::class));
     }
 }
