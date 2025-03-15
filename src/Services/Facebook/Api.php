@@ -1,6 +1,6 @@
 <?php
 
-namespace Toolkito\Larasap\Facebook;
+namespace Toolkito\Larasap\Services\Facebook;
 
 use FacebookAds\Api as FacebookApi;
 use FacebookAds\Object\Page;
