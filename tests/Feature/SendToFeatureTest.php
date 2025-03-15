@@ -39,9 +39,11 @@ class SendToFeatureTest extends TestCase
      */
     public function testTelegramMessage()
     {
-        $text = "Test message";
-        $result = SendTo::Telegram($text);
-        $this->assertTrue($result);
+        $result = SendTo::telegram('Test message');
+        $this->assertIsArray($result);
+        $this->assertTrue($result['ok']);
+        $this->assertArrayHasKey('result', $result);
+        $this->assertArrayHasKey('message_id', $result['result']);
     }
 
     /**
@@ -49,9 +51,11 @@ class SendToFeatureTest extends TestCase
      */
     public function testXMessage()
     {
-        $message = "Test post";
-        $result = SendTo::X($message);
-        $this->assertTrue($result);
+        $result = SendTo::x('Test message');
+        $this->assertIsArray($result);
+        $this->assertArrayHasKey('data', $result);
+        $this->assertArrayHasKey('id', $result['data']);
+        $this->assertEquals('1234567890', $result['data']['id']);
     }
 
     /**
@@ -59,13 +63,9 @@ class SendToFeatureTest extends TestCase
      */
     public function testFacebookLink()
     {
-        $data = [
-            'link' => 'https://example.com',
-            'message' => 'Test link'
-        ];
-        
-        $result = SendTo::Facebook('link', $data);
-        $this->assertTrue($result);
+        $result = SendTo::facebook('Test message', 'https://example.com');
+        $this->assertIsArray($result);
+        $this->assertArrayHasKey('id', $result);
     }
 
     protected function tearDown(): void
