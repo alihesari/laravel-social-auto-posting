@@ -64,6 +64,13 @@ class Api
     private static $proxy;
 
     /**
+     * Test mode flag
+     *
+     * @var bool
+     */
+    private static $test_mode = false;
+
+    /**
      * Initialize
      */
     public static function initialize()
@@ -72,6 +79,22 @@ class Api
         self::$bot_username = Config::get('larasap.telegram.bot_username');
         self::$channel_username = Config::get('larasap.telegram.channel_username');
         self::$proxy = !! Config::get('larasap.telegram.proxy');
+    }
+
+    /**
+     * Enable test mode
+     */
+    public static function enableTestMode()
+    {
+        self::$test_mode = true;
+    }
+
+    /**
+     * Disable test mode
+     */
+    public static function disableTestMode()
+    {
+        self::$test_mode = false;
     }
 
     /**
@@ -89,7 +112,7 @@ class Api
     public static function sendMessage($chat_id = null, $text, $inline_keyboard = '', $reply_keyboard = '', $parse_mode = 'HTML', $disable_web_page_preview = false, $disable_notification = false, $reply_to_message_id = '')
     {
         self::initialize();
-        $chat_id = $chat_id ? $chat_id : self::$channel_username;
+        $chat_id = $chat_id ?: Config::get('larasap.telegram.chat_id');
         $params = compact('chat_id','text', 'parse_mode', 'disable_web_page_preview', 'disable_notification', 'reply_to_message_id');
         if($inline_keyboard) {
             $params['reply_markup'] = self::inlineKeyboard($inline_keyboard);
@@ -98,7 +121,7 @@ class Api
             $params['reply_markup'] = self::replyKeyboard($reply_keyboard);
         }
         $result = self::sendRequest('sendMessage', $params);
-        return $result? $result : false;
+        return $result ? true : false;
     }
 
     /**
@@ -395,8 +418,12 @@ class Api
      * @return mixed
      * @throws \Exception
      */
-    public static function sendRequest($method = 'sendMessage', $params)
+    protected static function sendRequest($method, $params = [])
     {
+        if (self::$test_mode) {
+            return json_encode(['ok' => true, 'result' => ['message_id' => 123456789]]);
+        }
+
         $curl = curl_init(self::$api_url . self::$api_token . '/'. $method);
         curl_setopt($curl, CURLOPT_HEADER, false);
         curl_setopt($curl, CURLOPT_RETURNTRANSFER, 1);

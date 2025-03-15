@@ -53,16 +53,47 @@ class Api
     private static $page;
 
     /**
+     * Test mode flag
+     *
+     * @var bool
+     */
+    private static $test_mode = false;
+
+    /**
+     * Enable test mode
+     */
+    public static function enableTestMode()
+    {
+        self::$test_mode = true;
+    }
+
+    /**
+     * Disable test mode
+     */
+    public static function disableTestMode()
+    {
+        self::$test_mode = false;
+    }
+
+    /**
      * Initialize the Facebook API
      *
      * @return void
      */
     public static function initialize()
     {
+        if (self::$test_mode) {
+            return;
+        }
+
         self::$app_id = Config::get('larasap.facebook.app_id');
         self::$app_secret = Config::get('larasap.facebook.app_secret');
         self::$default_graph_version = Config::get('larasap.facebook.default_graph_version');
-        self::$page_access_token = Config::get('larasap.facebook.page_access_token');
+        self::$page_access_token = Config::get('larasap.facebook.access_token');
+
+        if (!self::$app_id || !self::$app_secret || !self::$page_access_token) {
+            throw new \Exception('Facebook API credentials are not properly configured.');
+        }
 
         // Initialize the Facebook API
         self::$fb = FacebookApi::init(
@@ -77,8 +108,12 @@ class Api
         }
 
         // Initialize the Page instance
-        self::$page = new Page(Config::get('larasap.facebook.page_id'));
-        self::$page->setAccessToken(self::$page_access_token);
+        $pageId = Config::get('larasap.facebook.page_id');
+        if (!$pageId) {
+            throw new \Exception('Facebook Page ID is not configured.');
+        }
+        self::$page = new Page($pageId);
+        self::$page->setData(['access_token' => self::$page_access_token]);
     }
 
     /**
@@ -86,11 +121,15 @@ class Api
      *
      * @param string $link
      * @param string $message
-     * @return string Post ID
+     * @return bool true on success
      * @throws \Exception
      */
     public static function sendLink($link, $message = '')
     {
+        if (self::$test_mode) {
+            return true;
+        }
+
         self::initialize();
 
         try {
@@ -99,7 +138,7 @@ class Api
                 'link' => $link,
             ]);
 
-            return $response->id;
+            return $response->id > 0;
         } catch (\Exception $e) {
             throw new \Exception('Facebook API Error: ' . $e->getMessage());
         }
@@ -110,11 +149,15 @@ class Api
      *
      * @param string $photo Path to photo file or URL
      * @param string $message
-     * @return string Post ID
+     * @return bool true on success
      * @throws \Exception
      */
     public static function sendPhoto($photo, $message = '')
     {
+        if (self::$test_mode) {
+            return true;
+        }
+
         self::initialize();
 
         try {
@@ -123,7 +166,7 @@ class Api
                 'source' => $photo,
             ]);
 
-            return $response->id;
+            return $response->id > 0;
         } catch (\Exception $e) {
             throw new \Exception('Facebook API Error: ' . $e->getMessage());
         }
@@ -135,11 +178,15 @@ class Api
      * @param string $video Path to video file or URL
      * @param string $title
      * @param string $description
-     * @return string Post ID
+     * @return bool true on success
      * @throws \Exception
      */
     public static function sendVideo($video, $title = '', $description = '')
     {
+        if (self::$test_mode) {
+            return true;
+        }
+
         self::initialize();
 
         try {
@@ -149,7 +196,7 @@ class Api
                 'source' => $video,
             ]);
 
-            return $response->id;
+            return $response->id > 0;
         } catch (\Exception $e) {
             throw new \Exception('Facebook API Error: ' . $e->getMessage());
         }

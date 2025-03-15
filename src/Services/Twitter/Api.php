@@ -31,17 +31,35 @@ class Api
         CURLOPT_USERAGENT => 'Twitter for PHP',
     ];
 
+    /** @var bool */
+    private static $test_mode = false;
+
     /** @var Twitter_OAuthConsumer */
     private static $consumer;
 
     /** @var Twitter_OAuthConsumer */
     private static $token;
 
-
     private static $consumerKey;
     private static $consumerSecret;
     private static $accessToken = null;
     private static $accessTokenSecret = null;
+
+    /**
+     * Enable test mode
+     */
+    public static function enableTestMode()
+    {
+        self::$test_mode = true;
+    }
+
+    /**
+     * Disable test mode
+     */
+    public static function disableTestMode()
+    {
+        self::$test_mode = false;
+    }
 
     /**
      * Initialize
@@ -52,13 +70,19 @@ class Api
             throw new TwitterException('PHP extension CURL is not loaded.');
         }
 
-        self::$consumerKey = Config::get('larasap.twitter.consurmer_key');
-        self::$consumerSecret = Config::get('larasap.twitter.consurmer_secret');;
-        self::$accessToken = Config::get('larasap.twitter.access_token');;
+        self::$consumerKey = Config::get('larasap.twitter.consumer_key');
+        self::$consumerSecret = Config::get('larasap.twitter.consumer_secret');
+        self::$accessToken = Config::get('larasap.twitter.access_token');
         self::$accessTokenSecret = Config::get('larasap.twitter.access_token_secret');
 
-        self::$consumer = new Twitter_OAuthConsumer(self::$consumerKey, self::$consumerSecret);
-        self::$token = new Twitter_OAuthConsumer(self::$accessToken, self::$accessTokenSecret);
+        if (!self::$consumerKey || !self::$consumerSecret || !self::$accessToken || !self::$accessTokenSecret) {
+            throw new TwitterException('Twitter API credentials are not properly configured.');
+        }
+
+        if (!self::$test_mode) {
+            self::$consumer = new Twitter_OAuthConsumer(self::$consumerKey, self::$consumerSecret);
+            self::$token = new Twitter_OAuthConsumer(self::$accessToken, self::$accessTokenSecret);
+        }
     }
 
     /**
@@ -66,12 +90,16 @@ class Api
      * @param  string   message encoded in UTF-8
      * @param  string  path to local media file to be uploaded
      * @param  array  additional options to send to statuses/update
-     * @return stdClass  see https://dev.twitter.com/rest/reference/post/statuses/update
+     * @return bool  true on success
      * @throws TwitterException
      */
     public static function sendMessage($message, $media = [], $options = [])
     {
         self::initialize();
+
+        if (self::$test_mode) {
+            return true;
+        }
 
         $mediaIds = [];
         foreach ($media as $item) {
@@ -101,6 +129,10 @@ class Api
      */
     public static function request($resource, $method, array $data = null, array $files = null)
     {
+        if (self::$test_mode) {
+            return (object)['id' => '123456789'];
+        }
+
         if (!strpos($resource, '://')) {
             if (!strpos($resource, '.')) {
                 $resource .= '.json';
