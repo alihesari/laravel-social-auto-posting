@@ -7,6 +7,7 @@ use FacebookAds\Object\Page;
 use FacebookAds\Object\Fields\PageFields;
 use Illuminate\Support\Facades\Config;
 use FacebookAds\Logger\CurlLogger;
+use Facebook\Facebook;
 
 class Api
 {
@@ -76,11 +77,22 @@ class Api
     }
 
     /**
+     * Check if test mode is enabled
+     *
+     * @return bool
+     */
+    public static function isTestMode()
+    {
+        return self::$test_mode;
+    }
+
+    /**
      * Initialize the Facebook API
      *
      * @return void
+     * @throws \Exception
      */
-    public static function initialize()
+    public function __construct()
     {
         if (self::$test_mode) {
             return;
@@ -117,17 +129,33 @@ class Api
     }
 
     /**
+     * Initialize the Facebook API
+     *
+     * @return void
+     */
+    public static function initialize()
+    {
+        if (self::$test_mode) {
+            return;
+        }
+
+        if (!self::$fb) {
+            new self();
+        }
+    }
+
+    /**
      * Send link and text message
      *
      * @param string $link
      * @param string $message
-     * @return bool true on success
+     * @return string|bool Post ID on success, false on failure
      * @throws \Exception
      */
     public static function sendLink($link, $message = '')
     {
         if (self::$test_mode) {
-            return true;
+            return '123456789';
         }
 
         self::initialize();
@@ -138,7 +166,7 @@ class Api
                 'link' => $link,
             ]);
 
-            return $response->id > 0;
+            return $response->id;
         } catch (\Exception $e) {
             throw new \Exception('Facebook API Error: ' . $e->getMessage());
         }
@@ -149,13 +177,13 @@ class Api
      *
      * @param string $photo Path to photo file or URL
      * @param string $message
-     * @return bool true on success
+     * @return string|bool Post ID on success, false on failure
      * @throws \Exception
      */
     public static function sendPhoto($photo, $message = '')
     {
         if (self::$test_mode) {
-            return true;
+            return '123456789';
         }
 
         self::initialize();
@@ -166,7 +194,7 @@ class Api
                 'source' => $photo,
             ]);
 
-            return $response->id > 0;
+            return $response->id;
         } catch (\Exception $e) {
             throw new \Exception('Facebook API Error: ' . $e->getMessage());
         }
@@ -178,13 +206,13 @@ class Api
      * @param string $video Path to video file or URL
      * @param string $title
      * @param string $description
-     * @return bool true on success
+     * @return string|bool Post ID on success, false on failure
      * @throws \Exception
      */
     public static function sendVideo($video, $title = '', $description = '')
     {
         if (self::$test_mode) {
-            return true;
+            return '123456789';
         }
 
         self::initialize();
@@ -196,7 +224,7 @@ class Api
                 'source' => $video,
             ]);
 
-            return $response->id > 0;
+            return $response->id;
         } catch (\Exception $e) {
             throw new \Exception('Facebook API Error: ' . $e->getMessage());
         }
