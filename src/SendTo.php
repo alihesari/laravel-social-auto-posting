@@ -35,48 +35,54 @@ class SendTo
             $message = self::assignSignature($message, $type);
         }
 
+        $channel_username = Config::get('larasap.telegram.channel_username');
+        // Ensure channel username starts with @
+        if (!empty($channel_username) && strpos($channel_username, '@') !== 0) {
+            $channel_username = '@' . ltrim($channel_username, '@');
+        }
+
         if ($attachment) {
             switch ($attachment['type']) {
                 case 'photo':
-                    $result = TelegramApi::sendPhoto(null, $attachment['file'], $message, $inline_keyboard);
+                    $result = TelegramApi::sendPhoto($channel_username, $attachment['file'], $message, $inline_keyboard);
                     break;
                 case 'audio':
                     $duration = isset($attachment['duration']) ? $attachment['duration'] : '';
                     $performer = isset($attachment['performer']) ? $attachment['performer'] : '';
                     $title = isset($attachment['title']) ? $attachment['title'] : '';
-                    $result = TelegramApi::sendAudio(null, $attachment['file'], $message, $duration, $performer, $title, $inline_keyboard);
+                    $result = TelegramApi::sendAudio($channel_username, $attachment['file'], $message, $duration, $performer, $title, $inline_keyboard);
                     break;
                 case 'document':
-                    $result = TelegramApi::sendDocument(null, $attachment['file'], $message, $inline_keyboard);
+                    $result = TelegramApi::sendDocument($channel_username, $attachment['file'], $message, $inline_keyboard);
                     break;
                 case 'video':
                     $duration = isset($attachment['duration']) ? $attachment['duration'] : '';
                     $width = isset($attachment['width']) ? $attachment['width'] : '';
                     $height = isset($attachment['height']) ? $attachment['height'] : '';
-                    $result = TelegramApi::sendVideo(null, $attachment['file'], $duration, $width, $height, $message, $inline_keyboard);
+                    $result = TelegramApi::sendVideo($channel_username, $attachment['file'], $duration, $width, $height, $message, $inline_keyboard);
                     break;
                 case 'voice':
                     $duration = isset($attachment['duration']) ? $attachment['duration'] : '';
-                    $result = TelegramApi::sendVoice(null, $attachment['file'], $message, $duration, $inline_keyboard);
+                    $result = TelegramApi::sendVoice($channel_username, $attachment['file'], $message, $duration, $inline_keyboard);
                     break;
                 case 'media_group':
-                    $result = TelegramApi::sendMediaGroup(null, json_encode($attachment['files']));
+                    $result = TelegramApi::sendMediaGroup($channel_username, json_encode($attachment['files']));
                     break;
                 case 'location':
                     $live_period = isset($attachment['live_period']) ? $attachment['live_period'] : '';
-                    $result = TelegramApi::sendLocation(null, $attachment['latitude'], $attachment['longitude'], $live_period, $inline_keyboard);
+                    $result = TelegramApi::sendLocation($channel_username, $attachment['latitude'], $attachment['longitude'], $live_period, $inline_keyboard);
                     break;
                 case 'venue':
                     $foursquare_id = isset($attachment['foursquare_id']) ? $attachment['foursquare_id'] : '';
-                    $result = TelegramApi::sendVenue(null, $attachment['latitude'], $attachment['longitude'], $attachment['title'], $attachment['address'], $foursquare_id, $inline_keyboard);
+                    $result = TelegramApi::sendVenue($channel_username, $attachment['latitude'], $attachment['longitude'], $attachment['title'], $attachment['address'], $foursquare_id, $inline_keyboard);
                     break;
                 case 'contact':
                     $last_name = isset($attachment['last_name']) ? $attachment['last_name'] : '';
-                    $result = TelegramApi::sendContact(null, $attachment['phone_number'], $attachment['first_name'], $last_name, $inline_keyboard);
+                    $result = TelegramApi::sendContact($channel_username, $attachment['phone_number'], $attachment['first_name'], $last_name, $inline_keyboard);
                     break;
             }
         } else {
-            $result = TelegramApi::sendMessage(null, $message, $inline_keyboard);
+            $result = TelegramApi::sendMessage($channel_username, $message, $inline_keyboard);
         }
 
         return $result;
