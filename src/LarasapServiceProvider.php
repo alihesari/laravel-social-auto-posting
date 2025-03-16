@@ -31,6 +31,12 @@ class LarasapServiceProvider extends ServiceProvider implements DeferrableProvid
         $this->app->singleton('larasap', function () {
             return new SendTo();
         });
+
+        // Merge environment variables with config
+        $this->app['config']->set('larasap.telegram.api_token', env('TELEGRAM_BOT_TOKEN', ''));
+        $this->app['config']->set('larasap.telegram.bot_username', env('TELEGRAM_BOT_USERNAME', ''));
+        $this->app['config']->set('larasap.telegram.channel_username', env('TELEGRAM_CHANNEL_USERNAME', ''));
+        $this->app['config']->set('larasap.telegram.channel_signature', env('TELEGRAM_CHANNEL_SIGNATURE', ''));
     }
 
     /**
