@@ -19,7 +19,8 @@ auth.json
 
 # IDE specific
 /.idea
-/.vscode
+/.vscode/*
+!/.vscode/launch.json
 /.vagrant
 /.fleet
 /.php-cs-fixer.cache
