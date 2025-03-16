@@ -678,4 +678,69 @@ By participating in this project, you agree to abide by our Code of Conduct.
 
 If you encounter any issues or have questions, please open an issue on GitHub.
 
+## 🛠 Development and Testing
+
+### Example Project
+This package includes a Laravel 12 example project in the `examples/laravel-12` directory that you can use for development and testing. This setup is particularly useful for:
+
+- Testing new features
+- Debugging issues
+- Contributing to the package
+- Understanding package usage
+- Developing custom integrations
+
+### Setting Up the Development Environment
+
+1. Clone the repository:
+```sh
+git clone https://github.com/toolkito/laravel-social-auto-posting.git
+cd laravel-social-auto-posting
+```
+
+2. Set up the example project:
+```sh
+cd examples/laravel-12
+composer install
+cp .env.example .env
+php artisan key:generate
+```
+
+3. Configure your social media credentials in `.env`:
+```env
+TELEGRAM_BOT_TOKEN=your_telegram_bot_token
+TELEGRAM_BOT_USERNAME=your_bot_username
+TELEGRAM_CHANNEL_USERNAME=your_channel_username
+# ... other credentials ...
+```
+
+4. Link the package for development:
+```sh
+composer require "toolkito/larasap:*"
+```
+
+5. Start the development server:
+```sh
+php artisan serve
+```
+
+### Debugging
+The example project includes VS Code debugging configurations in `.vscode/launch.json` for:
+- Debugging the Laravel application
+- Debugging the Larasap package
+- Debugging Laravel tests
+
+To use the debugger:
+1. Install the PHP Debug extension in VS Code
+2. Set breakpoints in your code
+3. Select the appropriate debug configuration
+4. Start debugging (F5)
+
+### Contributing
+When contributing to the package:
+1. Use the example project to test your changes
+2. Ensure all tests pass
+3. Follow the existing code style
+4. Update documentation as needed
+5. Submit a pull request with a clear description of your changes
+
 
