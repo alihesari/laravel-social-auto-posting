@@ -447,6 +447,66 @@ The package includes comprehensive test coverage:
 - Mock responses for API calls
 - Test mode for development
 
+## 🧪 Testing Routes
+
+To test the social media posting functionality, you can create your own routes in your Laravel application. Here's an example:
+
+1. Create a controller:
+```bash
+php artisan make:controller SocialMediaController
+```
+
+2. Add the following code to your controller:
+```php
+<?php
+
+namespace App\Http\Controllers;
+
+use Illuminate\Http\Request;
+use Toolkito\Larasap\Facades\X;
+use Toolkito\Larasap\Facades\Telegram;
+use Toolkito\Larasap\Facades\Facebook;
+
+class SocialMediaController extends Controller
+{
+    public function test()
+    {
+        try {
+            // Test Telegram posting
+            $telegramResult = Telegram::sendMessage('Test message from Laravel 12');
+            
+            // Test X (Twitter) posting
+            $xResult = X::post('Test tweet from Laravel 12');
+            
+            // Test Facebook posting
+            $facebookResult = Facebook::post([
+                'message' => 'Test post from Laravel 12'
+            ]);
+            
+            return response()->json([
+                'telegram' => $telegramResult,
+                'x' => $xResult,
+                'facebook' => $facebookResult
+            ]);
+        } catch (\Exception $e) {
+            return response()->json(['error' => $e->getMessage()], 500);
+        }
+    }
+}
+```
+
+3. Add the route in your `routes/web.php`:
+```php
+use App\Http\Controllers\SocialMediaController;
+
+Route::get('/test-social-posting', [SocialMediaController::class, 'test'])
+    ->name('social.test');
+```
+
+Now you can test the social media posting by visiting `/test-social-posting` in your browser.
+
+Note: Make sure you have configured your social media credentials in `config/larasap.php` or your `.env` file before testing.
+
 ## 📝 Notes
 
 - All methods support test mode for development
