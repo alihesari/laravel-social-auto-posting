@@ -8,6 +8,7 @@ use Facebook\Exceptions\FacebookSDKException;
 use Facebook\GraphNodes\GraphNode;
 use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Http;
 
 class Api
 {
@@ -120,10 +121,62 @@ class Api
     }
 
     /**
+     * Verify page access and permissions
+     *
+     * @return bool
+     * @throws \Exception
+     */
+    private static function verifyPageAccess()
+    {
+        try {
+            $pageId = Config::get('larasap.facebook.page_id');
+            
+            // First verify the page access token
+            $response = Http::get('https://graph.facebook.com/debug_token', [
+                'input_token' => self::$page_access_token,
+                'access_token' => self::$app_id . '|' . self::$app_secret
+            ]);
+
+            if (!$response->successful()) {
+                throw new \Exception('Invalid page access token: ' . $response->body());
+            }
+
+            $tokenData = $response->json();
+            
+            if (self::$debug_mode) {
+                Log::debug('Token debug data:', $tokenData);
+            }
+
+            // Verify page permissions
+            $response = Http::withToken(self::$page_access_token)
+                ->get('https://graph.facebook.com/' . self::$default_graph_version . '/' . $pageId . '/permissions');
+
+            if (!$response->successful()) {
+                throw new \Exception('Could not verify page permissions: ' . $response->body());
+            }
+
+            $permissions = $response->json();
+            
+            if (self::$debug_mode) {
+                Log::debug('Page permissions:', $permissions);
+            }
+
+            return true;
+        } catch (\Exception $e) {
+            if (self::$debug_mode) {
+                Log::error('Page access verification failed:', [
+                    'message' => $e->getMessage(),
+                    'trace' => $e->getTraceAsString()
+                ]);
+            }
+            throw new \Exception('Failed to verify page access: ' . $e->getMessage());
+        }
+    }
+
+    /**
      * Initialize the Facebook API
      *
      * @return void
-     * @throws \Exception
      */
     public function __construct()
     {
@@ -136,25 +189,51 @@ class Api
         self::$default_graph_version = Config::get('larasap.facebook.default_graph_version', 'v19.0');
         self::$page_access_token = Config::get('larasap.facebook.page_access_token');
 
-        if (!self::$app_id || !self::$app_secret || !self::$page_access_token) {
+        if (!self::$app_id || !self::$app_secret) {
             throw new \Exception('Facebook API credentials are not properly configured.');
         }
 
-        // Initialize the Facebook API
-        self::$fb = new Facebook([
-            'app_id' => self::$app_id,
-            'app_secret' => self::$app_secret,
-            'default_graph_version' => self::$default_graph_version,
-            'default_access_token' => self::$page_access_token,
-            'enable_beta_mode' => Config::get('larasap.facebook.enable_beta_mode', false),
-            'http_client_handler' => Config::get('larasap.facebook.http_client_handler', null),
-        ]);
-
-        // Initialize the Page instance
+        // Validate page ID
         $pageId = Config::get('larasap.facebook.page_id');
         if (!$pageId) {
             throw new \Exception('Facebook Page ID is not configured.');
         }
+
+        // If we don't have a page access token, try to get one
+        if (!self::$page_access_token) {
+            try {
+                if (self::$debug_mode) {
+                    Log::debug('Attempting to get page access token...');
+                }
+
+                $response = Http::get('https://graph.facebook.com/' . self::$default_graph_version . '/' . $pageId, [
+                    'fields' => 'access_token',
+                    'access_token' => self::$app_id . '|' . self::$app_secret
+                ]);
+
+                if (!$response->successful()) {
+                    throw new \Exception('Could not retrieve page access token: ' . $response->body());
+                }
+
+                $data = $response->json();
+                if (isset($data['access_token'])) {
+                    self::$page_access_token = $data['access_token'];
+                    if (self::$debug_mode) {
+                        Log::debug('Successfully retrieved page access token.');
+                    }
+                } else {
+                    throw new \Exception('Could not retrieve page access token.');
+                }
+            } catch (\Exception $e) {
+                if (self::$debug_mode) {
+                    Log::error('Error getting page access token:', ['error' => $e->getMessage()]);
+                }
+                throw new \Exception('Could not retrieve page access token: ' . $e->getMessage());
+            }
+        }
+
+        // Verify page access and permissions
+        self::verifyPageAccess();
     }
 
     /**
@@ -191,55 +270,88 @@ class Api
         self::initialize();
 
         try {
-            $data = array_merge([
+            // Verify page access before posting
+            self::verifyPageAccess();
+            
+            $data = [
                 'message' => $message,
                 'link' => $link,
-                'published' => $options['published'] ?? true,
-                'scheduled_publish_time' => $options['scheduled_publish_time'] ?? null,
-                'backdated_time' => $options['backdated_time'] ?? null,
-                'backdated_time_granularity' => $options['backdated_time_granularity'] ?? null,
-                'child_attachments' => $options['child_attachments'] ?? null,
-                'expanded_height' => $options['expanded_height'] ?? null,
-                'expanded_width' => $options['expanded_width'] ?? null,
-                'full_picture' => $options['full_picture'] ?? null,
-                'is_hidden' => $options['is_hidden'] ?? false,
-                'is_pinned' => $options['is_pinned'] ?? false,
-                'is_expired' => $options['is_expired'] ?? false,
-                'message_tags' => $options['message_tags'] ?? null,
-                'og_action_type_id' => $options['og_action_type_id'] ?? null,
-                'og_icon_id' => $options['og_icon_id'] ?? null,
-                'og_object_id' => $options['og_object_id'] ?? null,
-                'og_phrase' => $options['og_phrase'] ?? null,
-                'og_set_profile_badge' => $options['og_set_profile_badge'] ?? null,
-                'place' => $options['place'] ?? null,
-                'privacy' => $options['privacy'] ?? null,
-                'targeting' => $options['targeting'] ?? null,
-                'user_selected_tags' => $options['user_selected_tags'] ?? null,
-                'with_tags' => $options['with_tags'] ?? null,
-            ], array_filter($options));
+            ];
 
-            if (self::$debug_mode) {
-                Log::debug('Facebook API Request:', ['endpoint' => '/' . Config::get('larasap.facebook.page_id') . '/feed', 'data' => $data]);
+            // Add optional parameters if they exist
+            if (isset($options['privacy'])) {
+                $data['privacy'] = json_encode($options['privacy']);
+            }
+            if (isset($options['targeting'])) {
+                $data['targeting'] = json_encode($options['targeting']);
             }
 
-            $response = self::$fb->post('/' . Config::get('larasap.facebook.page_id') . '/feed', $data);
-            $graphNode = $response->getGraphNode();
-            return $graphNode['id'];
-        } catch (FacebookResponseException $e) {
-            if (self::$debug_mode) {
-                Log::error('Facebook Graph API Error:', ['error' => $e->getMessage(), 'code' => $e->getCode()]);
+            // Add other optional parameters
+            $optionalParams = [
+                'published',
+                'scheduled_publish_time',
+                'backdated_time',
+                'backdated_time_granularity',
+                'child_attachments',
+                'expanded_height',
+                'expanded_width',
+                'full_picture',
+                'is_hidden',
+                'is_pinned',
+                'is_expired',
+                'message_tags',
+                'og_action_type_id',
+                'og_icon_id',
+                'og_object_id',
+                'og_phrase',
+                'og_set_profile_badge',
+                'place',
+                'user_selected_tags',
+                'with_tags'
+            ];
+
+            foreach ($optionalParams as $param) {
+                if (isset($options[$param])) {
+                    $data[$param] = is_array($options[$param]) ? json_encode($options[$param]) : $options[$param];
+                }
             }
-            throw new \Exception('Facebook Graph API Error: ' . $e->getMessage());
-        } catch (FacebookSDKException $e) {
+
             if (self::$debug_mode) {
-                Log::error('Facebook SDK Error:', ['error' => $e->getMessage()]);
+                Log::debug('Facebook API Request:', [
+                    'endpoint' => 'https://graph.facebook.com/' . self::$default_graph_version . '/' . Config::get('larasap.facebook.page_id') . '/feed',
+                    'data' => $data
+                ]);
             }
-            throw new \Exception('Facebook SDK Error: ' . $e->getMessage());
+
+            // Use Laravel's HTTP client instead of Guzzle
+            $response = Http::withToken(self::$page_access_token)
+                ->post('https://graph.facebook.com/' . self::$default_graph_version . '/' . Config::get('larasap.facebook.page_id') . '/feed', $data);
+
+            if (self::$debug_mode) {
+                Log::debug('Facebook API Response:', [
+                    'status' => $response->status(),
+                    'body' => $response->json()
+                ]);
+            }
+
+            if (!$response->successful()) {
+                throw new \Exception('Facebook API Error: ' . $response->body());
+            }
+
+            $result = $response->json();
+            if (!isset($result['id'])) {
+                throw new \Exception('Facebook API Error: Invalid response format - missing post ID');
+            }
+
+            return $result['id'];
         } catch (\Exception $e) {
             if (self::$debug_mode) {
-                Log::error('Facebook API Error:', ['error' => $e->getMessage()]);
+                Log::error('Facebook API Error:', [
+                    'message' => $e->getMessage(),
+                    'trace' => $e->getTraceAsString()
+                ]);
             }
-            throw new \Exception('Facebook API Error: ' . $e->getMessage());
+            throw $e;
         }
     }
 
@@ -283,7 +395,7 @@ class Api
             }
 
             $response = self::$fb->post('/' . Config::get('larasap.facebook.page_id') . '/photos', $data);
-            $graphNode = $response->getGraphNode();
+            $graphNode = $response->getGraphNode()->asArray();
             return $graphNode['id'];
         } catch (FacebookResponseException $e) {
             if (self::$debug_mode) {
@@ -358,7 +470,7 @@ class Api
             }
 
             $response = self::$fb->post('/' . Config::get('larasap.facebook.page_id') . '/videos', $data);
-            $graphNode = $response->getGraphNode();
+            $graphNode = $response->getGraphNode()->asArray();
             return $graphNode['id'];
         } catch (FacebookResponseException $e) {
             if (self::$debug_mode) {
