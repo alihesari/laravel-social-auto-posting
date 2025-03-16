@@ -2,6 +2,7 @@
     "name": "toolkito/larasap",
     "description": "Laravel social auto posting (Larasap) lets you automatically post all your content to social networks such as Telegram Channel, X (Twitter), and Facebook.",
     "type": "library",
+    "version": "2.0.0-dev",
     "license": "MIT",
     "keywords": [
         "laravel",
