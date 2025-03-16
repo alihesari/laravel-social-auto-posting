@@ -100,15 +100,36 @@ class SendTo
         switch ($type) {
             case 'link':
                 $message = isset($data['message']) ? $data['message'] : '';
-                $result = FacebookApi::sendLink($data['link'], $message);
+                $options = [];
+                if (isset($data['privacy'])) {
+                    $options['privacy'] = $data['privacy'];
+                }
+                if (isset($data['targeting'])) {
+                    $options['targeting'] = $data['targeting'];
+                }
+                $result = FacebookApi::sendLink($data['link'], $message, $options);
                 break;
             case 'photo':
                 $message = isset($data['message']) ? $data['message'] : '';
-                $result = FacebookApi::sendPhoto($data['photo'], $message);
+                $options = [];
+                if (isset($data['privacy'])) {
+                    $options['privacy'] = $data['privacy'];
+                }
+                if (isset($data['targeting'])) {
+                    $options['targeting'] = $data['targeting'];
+                }
+                $result = FacebookApi::sendPhoto($data['photo'], $message, $options);
                 break;
             case 'video':
                 $description = isset($data['description']) ? $data['description'] : '';
-                $result = FacebookApi::sendVideo($data['video'], $data['title'], $description);
+                $options = [];
+                if (isset($data['privacy'])) {
+                    $options['privacy'] = $data['privacy'];
+                }
+                if (isset($data['targeting'])) {
+                    $options['targeting'] = $data['targeting'];
+                }
+                $result = FacebookApi::sendVideo($data['video'], $data['title'], $description, $options);
                 break;
             default:
                 $result = null;
