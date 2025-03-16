@@ -1,0 +1,89 @@
+{
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "name": "Debug Laravel Application",
+            "type": "php",
+            "request": "launch",
+            "program": "${workspaceFolder}/examples/laravel-12/artisan",
+            "args": [
+                "serve"
+            ],
+            "cwd": "${workspaceFolder}/examples/laravel-12",
+            "port": 9003,
+            "runtimeExecutable": "php",
+            "env": {
+                "XDEBUG_MODE": "debug",
+                "XDEBUG_CONFIG": "client_port=${port}"
+            },
+            "ignore": [
+                "**/vendor/**/*.php"
+            ],
+            "pathMappings": [
+                {
+                    "localRoot": "${workspaceFolder}/examples/laravel-12",
+                    "remoteRoot": "/var/www/html"
+                }
+            ]
+        },
+        {
+            "name": "Debug Larasap Package",
+            "type": "php",
+            "request": "launch",
+            "program": "${workspaceFolder}/examples/laravel-12/artisan",
+            "args": [
+                "serve"
+            ],
+            "cwd": "${workspaceFolder}/examples/laravel-12",
+            "port": 9003,
+            "runtimeExecutable": "php",
+            "env": {
+                "XDEBUG_MODE": "debug",
+                "XDEBUG_CONFIG": "client_port=${port}"
+            },
+            "ignore": [
+                "**/vendor/**/*.php"
+            ],
+            "pathMappings": [
+                {
+                    "localRoot": "${workspaceFolder}/src",
+                    "remoteRoot": "/var/www/html/vendor/alihesari/larasap/src"
+                },
+                {
+                    "localRoot": "${workspaceFolder}/examples/laravel-12",
+                    "remoteRoot": "/var/www/html"
+                }
+            ]
+        },
+        {
+            "name": "Debug Laravel Tests",
+            "type": "php",
+            "request": "launch",
+            "program": "${workspaceFolder}/examples/laravel-12/vendor/bin/phpunit",
+            "args": [
+                "--configuration",
+                "${workspaceFolder}/examples/laravel-12/phpunit.xml"
+            ],
+            "cwd": "${workspaceFolder}/examples/laravel-12",
+            "port": 9003,
+            "runtimeExecutable": "php",
+            "env": {
+                "XDEBUG_MODE": "debug",
+                "XDEBUG_CONFIG": "client_port=${port}"
+            },
+            "ignore": [
+                "**/vendor/**/*.php"
+            ],
+            "pathMappings": [
+                {
+                    "localRoot": "${workspaceFolder}/src",
+                    "remoteRoot": "/var/www/html/vendor/alihesari/larasap/src"
+                },
+                {
+                    "localRoot": "${workspaceFolder}/examples/laravel-12",
+                    "remoteRoot": "/var/www/html"
+                }
+            ]
+        }
+    ]
+} 

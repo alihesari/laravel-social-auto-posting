@@ -1,0 +1,57 @@
+# Dependencies
+/vendor/
+/node_modules/
+composer.lock
+package-lock.json
+yarn.lock
+
+# Laravel specific
+/public/hot
+/public/storage
+/storage/*.key
+.env
+.env.backup
+.env.production
+.phpunit.result.cache
+Homestead.json
+Homestead.yaml
+auth.json
+
+# IDE specific
+/.idea
+/.vscode/*
+!/.vscode/launch.json
+/.vagrant
+/.fleet
+/.php-cs-fixer.cache
+
+# OS specific
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
+npm-debug.log
+yarn-error.log
+
+# Build files
+/build
+/dist
+
+# Examples
+/examples/*/vendor/
+/examples/*/node_modules/
+/examples/*/bootstrap/cache/*
+/examples/*/storage/*
+/examples/*/.env
+/examples/*/.env.*
+/examples/*/composer.lock
+/examples/*/package-lock.json
+/examples/*/yarn.lock
+/examples/*/.phpunit.result.cache
+/examples/*/public/hot
+/examples/*/public/storage
+/examples/*/storage/*.key
+/examples/*/Homestead.json
+/examples/*/Homestead.yaml
+/examples/*/auth.json 
