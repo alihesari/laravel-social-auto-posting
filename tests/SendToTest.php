@@ -1,9 +1,9 @@
 <?php
 
-namespace Toolkito\Larasap\Tests;
+namespace Alihesari\Larasap\Tests;
 
 use PHPUnit\Framework\TestCase;
-use Toolkito\Larasap\SendTo;
+use Alihesari\Larasap\SendTo;
 
 class SendToTest extends TestCase
 {

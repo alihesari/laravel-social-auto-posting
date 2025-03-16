@@ -1,8 +1,8 @@
 <?php
 
-namespace Toolkito\Larasap\Tests\TestDoubles;
+namespace Alihesari\Larasap\Tests\TestDoubles;
 
-use Toolkito\Larasap\Services\Facebook\Api;
+use Alihesari\Larasap\Services\Facebook\Api;
 
 class FacebookApiDouble extends Api
 {
@@ -11,7 +11,7 @@ class FacebookApiDouble extends Api
         // Do nothing in test
     }
 
-    public static function sendLink($link, $message = '')
+    public static function sendLink($link, $message = '', $options = [])
     {
         return '123456789';
     }

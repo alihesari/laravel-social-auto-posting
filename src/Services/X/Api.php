@@ -7,9 +7,9 @@
  * X API: https://developer.x.com/en/docs/x-api
  */
 
-namespace Toolkito\Larasap\Services\X;
+namespace Alihesari\Larasap\Services\X;
 
-use Toolkito\Larasap\Services\X\Exceptions\XApiException;
+use Alihesari\Larasap\Services\X\Exceptions\XApiException;
 use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\Http;
 

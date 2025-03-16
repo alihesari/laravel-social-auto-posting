@@ -1,9 +1,9 @@
 <?php
 
-namespace Toolkito\Larasap\Tests\Unit;
+namespace Alihesari\Larasap\Tests\Unit;
 
-use Toolkito\Larasap\Tests\TestCase;
-use Toolkito\Larasap\Services\Facebook\Api;
+use Alihesari\Larasap\Tests\TestCase;
+use Alihesari\Larasap\Services\Facebook\Api;
 use Illuminate\Support\Facades\Http;
 
 class FacebookApiTest extends TestCase

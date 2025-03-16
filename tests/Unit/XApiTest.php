@@ -1,10 +1,10 @@
 <?php
 
-namespace Toolkito\Larasap\Tests\Unit;
+namespace Alihesari\Larasap\Tests\Unit;
 
-use Toolkito\Larasap\Tests\TestCase;
-use Toolkito\Larasap\Services\X\Api;
-use Toolkito\Larasap\Services\X\Exceptions\XApiException;
+use Alihesari\Larasap\Tests\TestCase;
+use Alihesari\Larasap\Services\X\Api;
+use Alihesari\Larasap\Services\X\Exceptions\XApiException;
 use Illuminate\Support\Facades\Http;
 
 class XApiTest extends TestCase

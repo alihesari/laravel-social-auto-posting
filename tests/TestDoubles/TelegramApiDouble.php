@@ -1,8 +1,8 @@
 <?php
 
-namespace Toolkito\Larasap\Tests\TestDoubles;
+namespace Alihesari\Larasap\Tests\TestDoubles;
 
-use Toolkito\Larasap\Services\Telegram\Api;
+use Alihesari\Larasap\Services\Telegram\Api;
 
 class TelegramApiDouble extends Api
 {

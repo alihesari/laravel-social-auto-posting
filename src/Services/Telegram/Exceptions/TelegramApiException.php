@@ -1,6 +1,6 @@
 <?php
 
-namespace Toolkito\Larasap\Services\Telegram\Exceptions;
+namespace Alihesari\Larasap\Services\Telegram\Exceptions;
 
 class TelegramApiException extends \Exception
 {

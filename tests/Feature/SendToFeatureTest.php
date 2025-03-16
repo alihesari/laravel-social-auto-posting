@@ -1,12 +1,12 @@
 <?php
 
-namespace Toolkito\Larasap\Tests\Feature;
+namespace Alihesari\Larasap\Tests\Feature;
 
-use Toolkito\Larasap\Tests\TestCase;
-use Toolkito\Larasap\SendTo;
-use Toolkito\Larasap\Services\Telegram\Api as TelegramApi;
-use Toolkito\Larasap\Services\X\Api as XApi;
-use Toolkito\Larasap\Services\Facebook\Api as FacebookApi;
+use Alihesari\Larasap\Tests\TestCase;
+use Alihesari\Larasap\SendTo;
+use Alihesari\Larasap\Services\Telegram\Api as TelegramApi;
+use Alihesari\Larasap\Services\X\Api as XApi;
+use Alihesari\Larasap\Services\Facebook\Api as FacebookApi;
 
 class SendToFeatureTest extends TestCase
 {

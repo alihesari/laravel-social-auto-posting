@@ -1,6 +1,6 @@
 <?php
 
-namespace Toolkito\Larasap;
+namespace Alihesari\Larasap;
 
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Contracts\Support\DeferrableProvider;

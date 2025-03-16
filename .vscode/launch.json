@@ -47,7 +47,7 @@
             "pathMappings": [
                 {
                     "localRoot": "${workspaceFolder}/src",
-                    "remoteRoot": "/var/www/html/vendor/toolkito/larasap/src"
+                    "remoteRoot": "/var/www/html/vendor/alihesari/larasap/src"
                 },
                 {
                     "localRoot": "${workspaceFolder}/examples/laravel-12",
@@ -77,7 +77,7 @@
             "pathMappings": [
                 {
                     "localRoot": "${workspaceFolder}/src",
-                    "remoteRoot": "/var/www/html/vendor/toolkito/larasap/src"
+                    "remoteRoot": "/var/www/html/vendor/alihesari/larasap/src"
                 },
                 {
                     "localRoot": "${workspaceFolder}/examples/laravel-12",

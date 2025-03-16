@@ -1,6 +1,6 @@
 <?php
 
-namespace Toolkito\Larasap\Services\X\Exceptions;
+namespace Alihesari\Larasap\Services\X\Exceptions;
 
 class XApiException extends \Exception
 {

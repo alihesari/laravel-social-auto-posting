@@ -1,6 +1,6 @@
 <?php
 
-namespace Toolkito\Larasap\Services\Facebook;
+namespace Alihesari\Larasap\Services\Facebook;
 
 use Facebook\Facebook;
 use Facebook\Exceptions\FacebookResponseException;

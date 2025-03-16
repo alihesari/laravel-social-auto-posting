@@ -11,12 +11,12 @@
  * Version:     1.0
  */
 
-namespace Toolkito\Larasap;
+namespace Alihesari\Larasap;
 
 use Illuminate\Support\Facades\Config;
-use Toolkito\Larasap\Services\Telegram\Api AS TelegramApi;
-use Toolkito\Larasap\Services\X\Api AS XApi;
-use Toolkito\Larasap\Services\Facebook\Api AS FacebookApi;
+use Alihesari\Larasap\Services\Telegram\Api AS TelegramApi;
+use Alihesari\Larasap\Services\X\Api AS XApi;
+use Alihesari\Larasap\Services\Facebook\Api AS FacebookApi;
 
 class SendTo
 {

@@ -3,7 +3,7 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use Toolkito\Larasap\SendTo;
+use Alihesari\Larasap\SendTo;
 
 class SocialMediaController extends Controller
 {

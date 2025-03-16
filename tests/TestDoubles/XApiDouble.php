@@ -1,8 +1,8 @@
 <?php
 
-namespace Toolkito\Larasap\Tests\TestDoubles;
+namespace Alihesari\Larasap\Tests\TestDoubles;
 
-use Toolkito\Larasap\Services\X\Api;
+use Alihesari\Larasap\Services\X\Api;
 
 class XApiDouble extends Api
 {

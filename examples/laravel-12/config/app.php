@@ -153,7 +153,7 @@ return [
         /*
          * Package Service Providers...
          */
-        Toolkito\Larasap\LarasapServiceProvider::class,
+        Alihesari\Larasap\LarasapServiceProvider::class,
 
         /*
          * Application Service Providers...
@@ -203,9 +203,9 @@ return [
         'URL' => Illuminate\Support\Facades\URL::class,
         'Validator' => Illuminate\Support\Facades\Validator::class,
         'View' => Illuminate\Support\Facades\View::class,
-        'Telegram' => Toolkito\Larasap\Facades\Telegram::class,
-        'X' => Toolkito\Larasap\Facades\X::class,
-        'Facebook' => Toolkito\Larasap\Facades\Facebook::class,
+        'Telegram' => Alihesari\Larasap\Facades\Telegram::class,
+        'X' => Alihesari\Larasap\Facades\X::class,
+        'Facebook' => Alihesari\Larasap\Facades\Facebook::class,
     ],
 
 ];

@@ -1,8 +1,10 @@
 ![](https://i.imgur.com/j6bzKQc.jpg)
 
-[![Build Status](https://travis-ci.org/toolkito/laravel-social-auto-posting.svg?branch=master)](https://github.com/toolkito/laravel-social-auto-posting) [![GitHub tag](https://img.shields.io/github/tag/bevacqua/awesome-badges.svg)](https://github.com/toolkito/laravel-social-auto-posting) 
+[![Build Status](https://travis-ci.org/alihesari/laravel-social-auto-posting.svg?branch=master)](https://github.com/alihesari/laravel-social-auto-posting) [![GitHub tag](https://img.shields.io/github/tag/bevacqua/awesome-badges.svg)](https://github.com/alihesari/laravel-social-auto-posting) 
 
-# 🌈 Laravel Social Auto Posting (Larasap)
+# 👋 Introduction Laravel Social Auto Posting (Larasap)
+
+> **Important Notice**: This package has been moved from `toolkito/larasap` to `alihesari/larasap`. The old package is no longer maintained. Please use the new namespace for all future installations.
 
 A powerful Laravel package that enables automated posting to multiple social media platforms including Telegram, X (Twitter), and Facebook. This package provides a simple and elegant way to manage your social media presence.
 
@@ -73,7 +75,7 @@ Uses Telegram Bot API token for authentication, providing:
 
 1. Install the package via Composer:
 ```sh
-composer require toolkito/larasap
+composer require alihesari/larasap
 ```
 
 2. Publish the configuration file:
@@ -173,7 +175,10 @@ php artisan config:clear
 
 First, add the following to your controller:
 ```php
-use Toolkito\Larasap\SendTo;
+use Alihesari\Larasap\SendTo;
+use Alihesari\Larasap\Facades\X;
+use Alihesari\Larasap\Facades\Telegram;
+use Alihesari\Larasap\Facades\Facebook;
 ```
 
 ### Telegram Examples
@@ -343,7 +348,7 @@ SendTo::x(
 SendTo::facebook(
     'link',
     [
-        'link' => 'https://github.com/toolkito/laravel-social-auto-posting',
+        'link' => 'https://github.com/alihesari/laravel-social-auto-posting',
         'message' => 'Check out this awesome package!',
         'privacy' => [
             'value' => 'EVERYONE'
@@ -463,9 +468,9 @@ php artisan make:controller SocialMediaController
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use Toolkito\Larasap\Facades\X;
-use Toolkito\Larasap\Facades\Telegram;
-use Toolkito\Larasap\Facades\Facebook;
+use Alihesari\Larasap\Facades\X;
+use Alihesari\Larasap\Facades\Telegram;
+use Alihesari\Larasap\Facades\Facebook;
 
 class SocialMediaController extends Controller
 {
@@ -594,7 +599,7 @@ We welcome contributions to Laravel Social Auto Posting! Here's how you can help
 1. Fork the repository
 2. Clone your fork:
 ```bash
-git clone https://github.com/your-username/laravel-social-auto-posting.git
+git clone https://github.com/alihesari/laravel-social-auto-posting.git
 ```
 3. Install dependencies:
 ```bash
@@ -693,7 +698,7 @@ This package includes a Laravel 12 example project in the `examples/laravel-12` 
 
 1. Clone the repository:
 ```sh
-git clone https://github.com/toolkito/laravel-social-auto-posting.git
+git clone https://github.com/alihesari/laravel-social-auto-posting.git
 cd laravel-social-auto-posting
 ```
 
@@ -715,7 +720,7 @@ TELEGRAM_CHANNEL_USERNAME=your_channel_username
 
 4. Link the package for development:
 ```sh
-composer require "toolkito/larasap:*"
+composer require "alihesari/larasap:*"
 ```
 
 5. Start the development server:

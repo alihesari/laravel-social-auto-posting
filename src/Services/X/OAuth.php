@@ -1,6 +1,6 @@
 <?php
 
-namespace Toolkito\Larasap\Services\X;
+namespace Alihesari\Larasap\Services\X;
 
 class X_OAuthConsumer
 {

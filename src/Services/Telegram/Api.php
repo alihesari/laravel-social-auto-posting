@@ -11,10 +11,10 @@
  * Version:     1.0
  */
 
-namespace Toolkito\Larasap\Services\Telegram;
+namespace Alihesari\Larasap\Services\Telegram;
 
 use Illuminate\Support\Facades\Config;
-use Toolkito\Larasap\Services\Telegram\Exceptions\TelegramApiException;
+use Alihesari\Larasap\Services\Telegram\Exceptions\TelegramApiException;
 
 class Api
 {
