@@ -1,7 +1,5 @@
 ![](https://i.imgur.com/j6bzKQc.jpg)
 
-[![Build Status](https://travis-ci.org/alihesari/laravel-social-auto-posting.svg?branch=master)](https://github.com/alihesari/laravel-social-auto-posting) [![GitHub tag](https://img.shields.io/github/tag/bevacqua/awesome-badges.svg)](https://github.com/alihesari/laravel-social-auto-posting) 
-
 # 👋 Introduction Laravel Social Auto Posting (Larasap)
 
 > **Important Notice**: This package has been moved from `toolkito/larasap` to `alihesari/larasap`. The old package is no longer maintained. Please use the new namespace for all future installations.
