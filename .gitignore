@@ -38,4 +38,19 @@ yarn-error.log
 /dist
 
 # Examples
-/examples/ 
+/examples/*/vendor/
+/examples/*/node_modules/
+/examples/*/bootstrap/cache/*
+/examples/*/storage/*
+/examples/*/.env
+/examples/*/.env.*
+/examples/*/composer.lock
+/examples/*/package-lock.json
+/examples/*/yarn.lock
+/examples/*/.phpunit.result.cache
+/examples/*/public/hot
+/examples/*/public/storage
+/examples/*/storage/*.key
+/examples/*/Homestead.json
+/examples/*/Homestead.yaml
+/examples/*/auth.json 
